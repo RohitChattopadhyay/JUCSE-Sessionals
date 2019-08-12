@@ -31,6 +31,8 @@ private slots:
 
         void on_clearButton_clicked();
 
+        void on_dda_button_clicked();
+
 private:
     Ui::MainWindow *ui;
     QLabel *statusLabel;

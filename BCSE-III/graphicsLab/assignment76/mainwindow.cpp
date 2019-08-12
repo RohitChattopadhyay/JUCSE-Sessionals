@@ -39,7 +39,7 @@ void MainWindow::Mouse_Pressed()
     int ker = ui->graph->ker;
     int xCord = (ui->graph->x - ui->graph->width()/2)/ker;
     int yCord = (ui->graph->height()/2 - ui->graph->y)/ker;
-    ui->graph->points.push_back(QPair< int , int >(xCord,yCord));
+    ui->graph->points.insert(QPair< int , int >(xCord,yCord));
     statusBar()->showMessage("Plotted: " + QString::number(xCord) + "," + QString::number(yCord),2000);
     ui->graph->repaint();
 
@@ -70,13 +70,43 @@ void MainWindow::on_pushButton_clicked()
 {
     if(ui->graph->points.size()==0)
            return;
-    ui->graph->points.pop_back();
+//    ui->graph->points.pop_back();
     ui->graph->repaint();
-
 }
 
 void MainWindow::on_clearButton_clicked()
 {
     ui->graph->points.clear();
     ui->graph->repaint();
+}
+
+void MainWindow::on_dda_button_clicked()
+{
+    float x1 = (ui->dda_start_x->text()).toFloat();
+    float y1 = (ui->dda_start_y->text()).toFloat();
+    float x2 = (ui->dda_end_x->text()).toFloat();
+    float y2 = (ui->dda_end_y->text()).toFloat();
+    int ker = ui->graph->ker;
+    float dx,dy,step,x,y;
+    int i,graphX,graphY;
+    dx = (x2-x1);
+    dy = (y2-y1);
+    if (abs(dx) >= abs(dy))
+        step = abs(dx);
+    else
+        step = abs(dy);
+    dx = dx/step;
+    dy = dy/step;
+    x = x1;
+    y = y1;
+    i = 1;
+    while(i<=step){
+        graphX = x;
+        graphY = y;
+        ui->graph->points.insert(QPair< int , int >(graphX,graphY));
+        x += dx;
+        y += dy;
+        i++;
+        ui->graph->repaint();
+    }
 }

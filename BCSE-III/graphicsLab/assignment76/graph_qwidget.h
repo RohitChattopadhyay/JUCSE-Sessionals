@@ -18,7 +18,7 @@ public:
     void mousePressEvent(QMouseEvent *ev);
     void leaveEvent(QEvent *);
     void paintEvent(QPaintEvent *);
-    QVector<QPair<int,int>> points = {};
+    QSet<QPair<int,int>> points = {};
     int ker;
     int x,y;
 
