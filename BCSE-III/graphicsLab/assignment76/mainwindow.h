@@ -31,7 +31,15 @@ private slots:
 
         void on_clearButton_clicked();
 
-        void on_dda_button_clicked();
+        void on_lineDraw_button_clicked();
+
+        // Line Drawing Algorithms
+        void drawLineParametric(int,int,int,int);
+        void drawLineDDA(float,float,float,float);
+        void drawLineBresenham(float,float,float,float);
+        void bresenhamPlotLineLow(int,int,int,int);
+        void bresenhamPlotLineHigh(int,int,int,int);
+
 
 private:
     Ui::MainWindow *ui;
