@@ -8,6 +8,7 @@
 #include <QStyle>
 #include <QPainter>
 #include <QStyleOption>
+#include <QTime>
 
 class graph_qWidget : public QWidget
 {

@@ -216,6 +216,8 @@ void MainWindow::on_lineDraw_button_clicked()
     float y0 = (ui->dda_start_y->text()).toFloat();
     float x1 = (ui->dda_end_x->text()).toFloat();
     float y1 = (ui->dda_end_y->text()).toFloat();
+    QTime timer;
+    timer.start();
     switch(ui->lineDrawingMethodsCombo->currentIndex()){
         case 0:
             drawLineParametric(x0,y0,x1,y1);
@@ -227,4 +229,6 @@ void MainWindow::on_lineDraw_button_clicked()
             drawLineBresenham(x0,y0,x1,y1);
             break;
     }
+    statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);
+
 }
