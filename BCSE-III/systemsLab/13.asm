@@ -1,37 +1,13 @@
-; .MODEL SMALL
-; .STACK 256H
-; .DATA
-; NUM1    DB  10H
-; NUM2    DB  31H
-; RES     DB  ?
-
-; .CODE
-; MAIN PROC
-;     MOV AX,@DATA
-;     MOV DS,AX
-;     MOV AL,NUM1
-;     ADD AL,NUM2
-;     MOV RES,AL
-;     MOV DL,RES
-;     MOV AH,02H
-;     INT 21H
-;     MOV AH,4CH
-;     INT 21H
-; MAIN ENDP
-; END MAIN
-
+; Hexadecimal number addition
 .model small
-
-.stack 100
-
+.stack 256h
 .data
-
 linefeed      db 13, 10, "$"
 num1          db 35h, "$"
 num2          db 30h, "$"
 hex_out       db 0, 0, 0, "H$"
 
-.code 	                    ; code segment
+.code
 
 call main
 
@@ -39,32 +15,28 @@ mov  ax,4c00h               ; terminate properly
 int  21h  
 
 main proc
-    mov ax,@data
-    mov ds,ax
-    
-    mov dl,num1
-    add dl,num2
-    mov dh,0
-    jnc nocarry
-    inc dh
+    mov ax,@data            
+    mov ds,ax               ; Set address to Data Segment    
+    mov dl,num1             ; Move first number to dl
+    add dl,num2             ; Add  second number to first
+    mov dh,0                ; Set dh to 0
+    jnc nocarry             
+    inc dh                  ; Increment dh
 nocarry:
-
-    call print_hex
-    call wait_for_key
-    
+    call print_hex          ; Subroutine Call  
     ret   
 main endp
 
 print_hex proc
-    mov cx,3
+    mov cx,3                ; Set result length
 c_loop:
-    dec cx
+    dec cx                  ; Decrement cx
     mov ax, dx
     
-    shr dx,1
-    shr dx,1
-    shr dx,1
-    shr dx,1
+    shr dx,1                ; Right shift
+    shr dx,1                ; Right shift
+    shr dx,1                ; Right shift
+    shr dx,1                ; Right shift
     
     and ax,0fh
     
@@ -90,16 +62,10 @@ set_digit:
 print_hex endp
 
 ins_linefeed proc
-    lea dx,linefeed
+    lea dx,linefeed     ; New line print
     mov ah,9
     int 21h
     ret
 ins_linefeed endp
-
-wait_for_key proc
-    mov  ah,7
-    int  21h
-    ret
-wait_for_key endp
 
 end

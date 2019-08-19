@@ -5,25 +5,25 @@
 
 .code
 main proc 
-    mov ax, @data
-    mov ds, ax
-    lea dx, msg
-    mov ah, 9
-    int 21h
-    mov bl,65
-    mov cl,26
+    mov ax, @data   
+    mov ds, ax      ;   Set data segment address
+    lea dx, msg     ;   Load address of msg
+    mov ah, 9       ;   Write string to STDOUT
+    int 21h         ;   Call Display
+    mov bl,65       ;   A charachter code
+    mov cl,26       ;   Counter
 
 print:
-    mov ah,2
-    mov dl,bl
-    inc bl
-    dec cl
-    int 21h
-    mov dl,32
-    int 21h
-    jnz print
-  mov ah,4ch
-  int 21h
+    mov ah,2        ;   Write charachter to STDOUT
+    mov dl,bl       ;   Store in DL for display
+    inc bl          ;   Increment BL
+    dec cl          ;   Decrement Counter
+    int 21h         ;   Call Display
+    mov dl,32       ;   Store code of "space" in dl
+    int 21h         ;   Call Display
+    jnz print       ;   Jump to print if not zero 
+  mov ah,4ch        ;   Exit code
+  int 21h              
 
 main endp
 end main

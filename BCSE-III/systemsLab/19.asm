@@ -7,23 +7,21 @@
 .code
 main proc 
     mov ax, @data
-    mov ds, ax
-    lea dx, msg1
-    mov ah, 9
-    int 21h
-    lea dx, msg4
-    mov ah, 9
-    int 21h
-    mov bl,0
+    mov ds, ax      ; Set data segment address
+    lea dx, msg1    ; Set address to msg1
+    mov ah, 9       ; Display String function
+    int 21h         ; Call Display
+    lea dx, msg4    ; Set address to msg1
+    mov ah, 9       ; Display String function
+    int 21h         ; Call Display
 
 looper:
-    inc bl
     mov ah, 1       ; Read char function
     int 21h         ; Read call
     cmp al, '0'
     jnz looper
 
-    lea dx, msg2    ; Get address of message
+    lea dx, msg2    ; Get address of msg2
     mov ah, 9       ; Display string function
     int 21h         ; Call display
     mov ah,4ch

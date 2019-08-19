@@ -83,24 +83,14 @@ disp:
     
     mov dl, bh
     mov ah, 2
-    int 21h
-    
-    call wait_for_key
-    
+    int 21h    
     ret
 main endp
 
 ins_linefeed proc
-    lea dx,linefeed
+    lea dx,linefeed ; New Line printer
     mov ah,9
     int 21h
     ret
 ins_linefeed endp
-
-wait_for_key proc
-    mov  ah,7
-    int  21h
-    ret
-wait_for_key endp
-
 end
