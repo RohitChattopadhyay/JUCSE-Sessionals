@@ -41,6 +41,12 @@ private slots:
         void bresenhamPlotLineHigh(int,int,int,int);
 
 
+        void on_comboBox_currentIndexChanged(int index);
+
+        void on_tabSelector_currentIndexChanged(int index);
+
+        void on_tabSelector_activated(int index);
+
 private:
     Ui::MainWindow *ui;
     QLabel *statusLabel;

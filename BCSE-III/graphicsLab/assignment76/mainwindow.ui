@@ -31,6 +31,10 @@
   <property name="windowTitle">
    <string>001710501076 | Priti Shaw</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../../../../../../home/rchattopadhyay/Desktop/julogo.gif</normaloff>../../../../../../../../home/rchattopadhyay/Desktop/julogo.gif</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <property name="minimumSize">
     <size>
@@ -51,7 +55,7 @@
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
-     <item row="0" column="0" rowspan="2">
+     <item row="0" column="1">
       <widget class="graph_qWidget" name="graph" native="true">
        <property name="enabled">
         <bool>true</bool>
@@ -134,7 +138,7 @@
       <x>510</x>
       <y>20</y>
       <width>321</width>
-      <height>161</height>
+      <height>141</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -216,229 +220,376 @@
      </item>
     </layout>
    </widget>
-   <widget class="QScrollArea" name="scrollArea">
+   <widget class="QWidget" name="formLayoutWidget_2">
     <property name="geometry">
      <rect>
       <x>509</x>
-      <y>180</y>
+      <y>160</y>
       <width>321</width>
-      <height>311</height>
+      <height>31</height>
      </rect>
     </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAsNeeded</enum>
-    </property>
-    <property name="widgetResizable">
-     <bool>true</bool>
-    </property>
-    <widget class="QWidget" name="scrollAreaWidgetContents">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>319</width>
-       <height>309</height>
-      </rect>
-     </property>
-     <widget class="QWidget" name="verticalLayoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>321</width>
-        <height>181</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QFormLayout" name="formLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Select Tab&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="tabSelector">
        <item>
-        <widget class="QScrollArea" name="functionPane">
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents_2">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>317</width>
-            <height>177</height>
-           </rect>
-          </property>
-          <widget class="QGroupBox" name="groupBox">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>319</width>
-             <height>181</height>
-            </rect>
-           </property>
-           <property name="title">
-            <string>Line Drawing Algorithms</string>
-           </property>
-           <widget class="Line" name="line_2">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>18</y>
-              <width>321</width>
-              <height>6</height>
-             </rect>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-           <widget class="QWidget" name="verticalLayoutWidget_3">
-            <property name="geometry">
-             <rect>
-              <x>-3</x>
-              <y>19</y>
-              <width>61</width>
-              <height>121</height>
-             </rect>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
-             <item>
-              <widget class="QLabel" name="label_7">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string> Start</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_6">
-               <property name="text">
-                <string> End</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_9">
-               <property name="text">
-                <string>Method</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="verticalLayoutWidget_2">
-            <property name="geometry">
-             <rect>
-              <x>59</x>
-              <y>19</y>
-              <width>261</width>
-              <height>121</height>
-             </rect>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_9">
-                 <item>
-                  <widget class="QLabel" name="label_3">
-                   <property name="text">
-                    <string>&lt;b&gt;X Axis&lt;/b&gt;</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="dda_start_x"/>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="dda_end_x"/>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_6">
-                 <item>
-                  <widget class="QLabel" name="label_8">
-                   <property name="text">
-                    <string>&lt;b&gt;Y Axis&lt;/b&gt;</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="dda_start_y"/>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="dda_end_y"/>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QComboBox" name="lineDrawingMethodsCombo">
-               <item>
-                <property name="text">
-                 <string>Parametric Form</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Digital Differential Analyzer</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Bresenham</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QPushButton" name="lineDraw_button">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>150</y>
-              <width>319</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>Draw Line</string>
-            </property>
-           </widget>
-          </widget>
-         </widget>
-        </widget>
+        <property name="text">
+         <string>Line Drawing</string>
+        </property>
        </item>
-      </layout>
-     </widget>
-    </widget>
+       <item>
+        <property name="text">
+         <string>Circle Drawing</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ellipse Drawing</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
    </widget>
-   <zorder>scrollArea</zorder>
-   <zorder>gridLayoutWidget</zorder>
-   <zorder>line</zorder>
-   <zorder>label</zorder>
-   <zorder>formLayoutWidget</zorder>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>190</y>
+      <width>321</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_11">
+     <item>
+      <widget class="QGroupBox" name="lineDrawingTab">
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="title">
+        <string>Line Drawing Algorithms</string>
+       </property>
+       <widget class="Line" name="line_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>18</y>
+          <width>321</width>
+          <height>6</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QWidget" name="verticalLayoutWidget_3">
+        <property name="geometry">
+         <rect>
+          <x>-3</x>
+          <y>19</y>
+          <width>61</width>
+          <height>121</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string> Start</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string> End</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Method</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="verticalLayoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>59</x>
+          <y>19</y>
+          <width>261</width>
+          <height>121</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>&lt;b&gt;X Axis&lt;/b&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="dda_start_x"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="dda_end_x"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <widget class="QLabel" name="label_8">
+               <property name="text">
+                <string>&lt;b&gt;Y Axis&lt;/b&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="dda_start_y"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="dda_end_y"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QComboBox" name="lineDrawingMethodsCombo">
+           <item>
+            <property name="text">
+             <string>Parametric Form</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Digital Differential Analyzer</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Bresenham</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QPushButton" name="lineDraw_button">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>150</y>
+          <width>319</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Draw Line</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="circleDrawingTab">
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="title">
+        <string>Circle Drawing Algorithms</string>
+       </property>
+       <widget class="Line" name="line_7">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>18</y>
+          <width>321</width>
+          <height>6</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QWidget" name="verticalLayoutWidget_12">
+        <property name="geometry">
+         <rect>
+          <x>-3</x>
+          <y>19</y>
+          <width>61</width>
+          <height>121</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_24">
+         <item>
+          <widget class="QLabel" name="label_35">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_36">
+           <property name="text">
+            <string> Start</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_37">
+           <property name="text">
+            <string> End</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_38">
+           <property name="text">
+            <string>Method</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="verticalLayoutWidget_13">
+        <property name="geometry">
+         <rect>
+          <x>59</x>
+          <y>19</y>
+          <width>261</width>
+          <height>121</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_25">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_26">
+             <item>
+              <widget class="QLabel" name="label_39">
+               <property name="text">
+                <string>&lt;b&gt;X Axis&lt;/b&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="dda_start_x_6"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="dda_end_x_6"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_27">
+             <item>
+              <widget class="QLabel" name="label_40">
+               <property name="text">
+                <string>&lt;b&gt;Y Axis&lt;/b&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="dda_start_y_6"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="dda_end_y_6"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QComboBox" name="lineDrawingMethodsCombo_6">
+           <item>
+            <property name="text">
+             <string>Parametric Form</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Digital Differential Analyzer</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Bresenham</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QPushButton" name="lineDraw_button_6">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>150</y>
+          <width>319</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Draw Line</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

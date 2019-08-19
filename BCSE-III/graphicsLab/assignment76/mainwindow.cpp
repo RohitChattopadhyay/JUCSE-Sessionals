@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graph, SIGNAL(Mouse_Pressed()),this,SLOT(Mouse_Pressed()));
     connect(ui->graph, SIGNAL(Mouse_Left()),this,SLOT(Mouse_left()));
     ui->graph->resize(480,480);
+
+    ui->circleDrawingTab->hide();
 }
 
 MainWindow::~MainWindow()
@@ -110,7 +112,6 @@ void MainWindow::drawLineParametric(int x0, int y0, int x1, int y1){
 
 //DDA
 void MainWindow::drawLineDDA(float x0, float y0, float x1, float y1){
-    int ker = ui->graph->ker;
     float dx,dy,step,x,y;
     int i,graphX,graphY;
     dx = (x1-x0);
@@ -230,5 +231,22 @@ void MainWindow::on_lineDraw_button_clicked()
             break;
     }
     statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);
+}
 
+void MainWindow::on_tabSelector_currentIndexChanged(int index)
+{
+    ui->lineDrawingTab->hide();
+    ui->circleDrawingTab->hide();
+//    ui->lineDrawingTab->hide();
+    switch (index) {
+        case 0:
+           ui->lineDrawingTab->show();
+           break;
+        case 1:
+           ui->circleDrawingTab->show();
+           break;
+//        case 2:
+//           ui->lineDrawingTab->show();
+//           break;
+        }
 }
