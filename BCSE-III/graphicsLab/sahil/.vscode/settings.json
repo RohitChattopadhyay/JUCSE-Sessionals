@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "qgraphicstransform": "cpp"
+    },
+    "cSpell.ignoreWords": [
+        "cast",
+        "oled",
+        "qgraphicsitem"
+    ]
+}
