@@ -23,7 +23,6 @@ public:
     QVector<QPair<QString,QString> > recent = {};
     int ker;
     int x,y;
-    int brushColorIdx;
 
 signals:
     void Mouse_Pressed();

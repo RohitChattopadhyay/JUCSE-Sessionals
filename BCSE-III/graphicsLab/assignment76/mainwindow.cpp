@@ -381,8 +381,3 @@ void MainWindow::on_circleDrawButton_clicked()
     statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);
 
 }
-
-void MainWindow::on_brushColor_currentIndexChanged(int index)
-{
-    ui->graph->brushColorIdx = index;
-}
