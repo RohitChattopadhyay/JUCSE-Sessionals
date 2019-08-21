@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graph, SIGNAL(Mouse_Pressed()),this,SLOT(Mouse_Pressed()));
     connect(ui->graph, SIGNAL(Mouse_Left()),this,SLOT(Mouse_left()));
     ui->graph->resize(480,480);
-    ui->pushButton->hide(); // undo button
 }
 
 MainWindow::~MainWindow()
@@ -67,14 +66,6 @@ void MainWindow::on_comboBox_2_currentIndexChanged(int index)
 void MainWindow::on_kernel_currentIndexChanged(const QString &arg1)
 {
     ui->graph->ker = arg1.toInt();
-    ui->graph->repaint();
-}
-
-void MainWindow::on_pushButton_clicked()
-{
-    if(ui->graph->points.size()==0)
-           return;
-//    ui->graph->points.pop_back();
     ui->graph->repaint();
 }
 
@@ -300,6 +291,50 @@ void MainWindow::drawCirclePolar(int cx, int cy, float r){
     }
     while (theta<=1.571); // pi = 3.141 => pi/2 = 1.570795
 }
+// Bresenham Mid Point
+void MainWindow::drawCircleBresenham(int cx, int cy, float r){
+    int x = r, y = 0;
+    ui->graph->points.insert(QPair< int , int >( cx, cy));
+    ui->graph->points.insert(QPair< int , int >( x + cx, y + cy));
+
+    if (r > 0)
+    {
+        ui->graph->points.insert(QPair< int , int >( x + cx, -y + cy));
+        ui->graph->points.insert(QPair< int , int >( y + cx, x + cy));
+        ui->graph->points.insert(QPair< int , int >( -y + cx, x + cy));
+    }
+
+    int P = 1 - r;
+    while (x > y)
+    {
+        y++;
+        if (P <= 0)
+            P = P + 2*y + 1;
+        else
+        {
+            x--;
+            P = P + 2*y - 2*x + 1;
+        }
+
+        if (x < y)
+            break;
+
+        ui->graph->points.insert(QPair< int , int >( x + cx, y + cy));
+        ui->graph->points.insert(QPair< int , int >( -x + cx, y + cy));
+        ui->graph->points.insert(QPair< int , int >( x + cx, -y + cy));
+        ui->graph->points.insert(QPair< int , int >( -x + cx, -y + cy));
+
+        if (x != y)
+        {
+            ui->graph->points.insert(QPair< int , int >( y + cx, x + cy));
+            ui->graph->points.insert(QPair< int , int >( -y + cx, x + cy));
+            ui->graph->points.insert(QPair< int , int >( y + cx, -x + cy));
+            ui->graph->points.insert(QPair< int , int >( -y + cx, -x + cy));
+        }
+        ui->graph->repaint();
+    }
+}
+
 void MainWindow::on_circleDrawButton_clicked()
 {
     if( ui->circleCenterX->text() == "" || ui->circleCenterY->text() == "" )
@@ -329,7 +364,7 @@ void MainWindow::on_circleDrawButton_clicked()
     }
     int cx = (ui->circleCenterX->text()).toInt();
     int cy = (ui->circleCenterY->text()).toInt();
-    float r = (ui->circleRadius->text()).toFloat();
+    float r = abs((ui->circleRadius->text()).toFloat());
     QTime timer;
     timer.start();
     switch(ui->circleDrawMethod->currentIndex()){
@@ -340,9 +375,14 @@ void MainWindow::on_circleDrawButton_clicked()
             drawCirclePolar(cx,cy,r);
             break;
         case 2:
-            // drawCircleBresenham(cx,cy,r);
+            drawCircleBresenham(cx,cy,r);
             break;
     }
     statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);
 
+}
+
+void MainWindow::on_brushColor_currentIndexChanged(int index)
+{
+    ui->graph->brushColorIdx = index;
 }

@@ -211,11 +211,47 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QPushButton" name="pushButton">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_13">
        <property name="text">
-        <string>Undo last plot</string>
+        <string/>
        </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_14">
+       <property name="text">
+        <string>&lt;b&gt;Color&lt;/b&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="brushColor">
+       <item>
+        <property name="text">
+         <string>Yellow</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Red</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Black</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Grey</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>White</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
@@ -601,7 +637,6 @@
   <tabstop>kernel</tabstop>
   <tabstop>comboBox_2</tabstop>
   <tabstop>clearButton</tabstop>
-  <tabstop>pushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>
