@@ -253,7 +253,7 @@ void MainWindow::drawCircleCartesian(int cx, int cy, float r){
         ixR++;
         ixL--;
     }
-    while (ixR<=(int)(1.42*(cx+r))); // root2 is 1.414 so took 1.42
+    while (ixR<=ceil((cx+r)/1.4)); // root2 is 1.414 so took 1.4
 
     int iyU = cy;
     int iyD = cy-1;
@@ -268,7 +268,7 @@ void MainWindow::drawCircleCartesian(int cx, int cy, float r){
         iyU++;
         iyD--;
     }
-    while (iyU<=(int)(1.42*(cy+r))); // root2 is 1.414 so took 1.42
+    while (iyU<=ceil((cy+r)/1.4)); // root2 is 1.414 so took 1.4
 }
 
 // Polar Form
@@ -358,7 +358,7 @@ void MainWindow::on_circleDrawButton_clicked()
             ui->circleRadius->setText(QString::number((sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)))));
         }
         else{
-            statusBar()->showMessage("Radiusr not specified",2000);
+            statusBar()->showMessage("Radius not specified",2000);
             return;
         }
     }
@@ -376,6 +376,156 @@ void MainWindow::on_circleDrawButton_clicked()
             break;
         case 2:
             drawCircleBresenham(cx,cy,r);
+            break;
+    }
+    statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);
+}
+
+// Ellipse Drawing Algorithm
+
+// Cartesian Form
+void MainWindow::drawEllipseCartesian(int cx,int cy,float a, float b){
+    ui->graph->points.insert(QPair< int , int >(cx,cy));
+    ui->graph->repaint();
+    float aSq = a*a;
+    float bSq = b*b;
+    float diff;
+    int ixL,ixR;
+    ixR = cx;
+    ixL = cx;
+    do {
+        diff = sqrt(bSq*(1-((ixR-cx)*(ixR-cx))/aSq));
+        ui->graph->points.insert(QPair< int , int >( ixR, cy + diff));
+        ui->graph->points.insert(QPair< int , int >( ixR, cy - diff));
+        ui->graph->points.insert(QPair< int , int >( ixL, cy + diff));
+        ui->graph->points.insert(QPair< int , int >( ixL, cy - diff));
+        ui->graph->repaint();
+        ixR++;
+        ixL--;
+    }
+    while (ixR <= (cx + a));
+
+    int iyD,iyU;
+    iyD = cy;
+    iyU = cy;
+    do {
+        diff = sqrt(aSq*(1-((iyU-cy)*(iyU-cy))/bSq));
+        ui->graph->points.insert(QPair< int , int >( cx + diff, iyU));
+        ui->graph->points.insert(QPair< int , int >( cx - diff, iyU));
+        ui->graph->points.insert(QPair< int , int >( cx + diff, iyD));
+        ui->graph->points.insert(QPair< int , int >( cx - diff, iyD));
+        ui->graph->repaint();
+        iyU++;
+        iyD--;
+    }
+    while (iyU <= (cy + b));
+}
+// Polar form
+void MainWindow::drawEllipsePolar(int cx, int cy, float a, float b){
+    ui->graph->points.insert(QPair< int , int >(cx,cy));
+    ui->graph->repaint();
+    int ix = cx;
+    int iy = cy;
+    float delTheta = 1/sqrt(a*a+b*b);
+    float theta = 0;
+    do{
+        float cosTheta = a*cos(theta);
+        float sinTheta = b*sin(theta);
+        ui->graph->points.insert(QPair< int , int >(ix+cosTheta,iy+sinTheta));
+        ui->graph->points.insert(QPair< int , int >(ix+cosTheta,iy-sinTheta));
+        ui->graph->points.insert(QPair< int , int >(ix-cosTheta,iy+sinTheta));
+        ui->graph->points.insert(QPair< int , int >(ix-cosTheta,iy-sinTheta));
+        ui->graph->repaint();
+        theta += delTheta;
+    }
+    while (theta<=1.571); // pi = 3.141 => pi/2 = 1.570795
+}
+// Bresenham mid point
+void MainWindow::drawEllipseBresenham(int xc, int yc, float rx, float ry){
+    float dx, dy, d1, d2, x, y;
+    x = 0;
+    y = ry;
+
+    d1 = (ry * ry) - (rx * rx * ry) + (0.25 * rx * rx);
+    dx = 2 * ry * ry * x;
+    dy = 2 * rx * rx * y;
+
+    while (dx < dy)
+    {
+        ui->graph->points.insert(QPair< int , int >(x + xc,y + yc));
+        ui->graph->points.insert(QPair< int , int >(-x + xc,y + yc));
+        ui->graph->points.insert(QPair< int , int >(x + xc,-y + yc));
+        ui->graph->points.insert(QPair< int , int >(-x + xc,-y + yc));
+        ui->graph->repaint();
+        if (d1 < 0)
+        {
+            x++;
+            dx = dx + (2 * ry * ry);
+            d1 = d1 + dx + (ry * ry);
+        }
+        else
+        {
+            x++;
+            y--;
+            dx = dx + (2 * ry * ry);
+            dy = dy - (2 * rx * rx);
+            d1 = d1 + dx - dy + (ry * ry);
+        }
+    }
+
+    d2 = ((ry * ry) * ((x + 0.5) * (x + 0.5))) + ((rx * rx) * ((y - 1) * (y - 1))) - (rx * rx * ry * ry);
+
+    while (y >= 0)
+    {
+        ui->graph->points.insert(QPair< int , int >(x + xc,y + yc));
+        ui->graph->points.insert(QPair< int , int >(-x + xc,y + yc));
+        ui->graph->points.insert(QPair< int , int >(x + xc,-y + yc));
+        ui->graph->points.insert(QPair< int , int >(-x + xc,-y + yc));
+        ui->graph->repaint();
+        if (d2 > 0)
+        {
+            y--;
+            dy = dy - (2 * rx * rx);
+            d2 = d2 + (rx * rx) - dy;
+        }
+        else
+        {
+            y--;
+            x++;
+            dx = dx + (2 * ry * ry);
+            dy = dy - (2 * rx * rx);
+            d2 = d2 + dx - dy + (rx * rx);
+        }
+    }
+}
+
+void MainWindow::on_ellipseDrawButton_clicked()
+{
+    if(
+            ui->ellipseCenterX->text() == "" ||
+            ui->ellipseCenterY->text() == "" ||
+            ui->ellipseMajorAxisLen->text() == "" ||
+            ui->ellipseMinorAxisLen->text() == ""
+    )
+    {
+        statusBar()->showMessage("Data insufficient",2000);
+        return;
+    }
+    int cx = (ui->ellipseCenterX->text()).toInt();
+    int cy = (ui->ellipseCenterY->text()).toInt();
+    float a = abs((ui->ellipseMajorAxisLen->text()).toFloat())/2; // Major axis = 2a
+    float b = abs((ui->ellipseMinorAxisLen->text()).toFloat())/2; // Minor axis = 2b
+    QTime timer;
+    timer.start();
+    switch(ui->ellipseDrawMethod->currentIndex()){
+        case 0:
+            drawEllipseCartesian(cx,cy,a,b);
+            break;
+        case 1:
+            drawEllipsePolar(cx,cy,a,b);
+            break;
+        case 2:
+            drawEllipseBresenham(cx,cy,a,b);
             break;
     }
     statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);

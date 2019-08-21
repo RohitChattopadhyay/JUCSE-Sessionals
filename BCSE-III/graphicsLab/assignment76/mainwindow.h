@@ -44,6 +44,12 @@ private slots:
         void drawCircleBresenham(int,int,float);
         void on_circleDrawButton_clicked();
 
+        // Ellipse Drawing Algorithm
+        void drawEllipseCartesian(int,int,float,float);
+        void drawEllipsePolar(int,int,float,float);
+        void drawEllipseBresenham(int, int, float, float);
+        void on_ellipseDrawButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QLabel *statusLabel;
