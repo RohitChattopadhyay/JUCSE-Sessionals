@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
 #include "graph_qwidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -16,8 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graph, SIGNAL(Mouse_Pressed()),this,SLOT(Mouse_Pressed()));
     connect(ui->graph, SIGNAL(Mouse_Left()),this,SLOT(Mouse_left()));
     ui->graph->resize(480,480);
-
-    ui->circleDrawingTab->hide();
+    ui->pushButton->hide(); // undo button
 }
 
 MainWindow::~MainWindow()
@@ -33,7 +31,6 @@ void MainWindow::Mouse_current_pos()
     QString msg;
     msg.sprintf("%4d, %4d",xCord,yCord);
     MainWindow::statusLabel->setText(msg);
-
 }
 
 void MainWindow::Mouse_Pressed()
@@ -45,8 +42,8 @@ void MainWindow::Mouse_Pressed()
     if(ui->graph->recent.size()<2)
         ui->graph->recent.push_back(QPair< QString , QString >(QString::number(xCord),QString::number(yCord)));
     else{
-        ui->graph->recent.pop_front();
-        ui->graph->recent.push_back(QPair< QString , QString >(QString::number(xCord),QString::number(yCord)));
+        ui->graph->recent.pop_back();
+        ui->graph->recent.push_front(QPair< QString , QString >(QString::number(xCord),QString::number(yCord)));
     }
     statusBar()->showMessage("Plotted: " + QString::number(xCord) + "," + QString::number(yCord),2000);
     ui->graph->repaint();
@@ -91,22 +88,34 @@ void MainWindow::on_clearButton_clicked()
 // Line Drawing Algorithms
 //Parametric
 void MainWindow::drawLineParametric(int x0, int y0, int x1, int y1){
-    if(x0>x1){
-        int temp = x0;
-        x0 = x1;
-        x1 = temp;
-        temp = y0;
-        y0 = y1;
-        y1 = temp;
+    if(x0==x1){
+        for(int iy = y0;iy<=y1; ++iy){
+            ui->graph->points.insert(QPair< int , int >(x0,iy));
+            ui->graph->repaint();
+        }
     }
+    else{
+        if(x0>x1){
+            int temp = x0;
+            x0 = x1;
+            x1 = temp;
+            temp = y0;
+            y0 = y1;
+            y1 = temp;
+        }
+        float m = float(y1-y0)/float(x1-x0);
+        float c = float(x0*y1-x1*y0)/float(x0-x1);
+        if(abs(m)>1){
 
-    float m = float(y1-y0)/float(x1-x0);
-    float c = float(x0*y1-x1*y0)/float(x0-x1);
-    for(int ix = x0;ix<=x1; ++ix){
-        float fy = m*ix + c ; // y = mx + c
-        int iy = (int)(fy+0.5);
-        ui->graph->points.insert(QPair< int , int >(ix,iy));
-        ui->graph->repaint();
+        }
+        else{
+            for(int ix = x0;ix<=x1; ++ix){
+                float fy = m*ix + c ; // y = mx + c
+                int iy = (int)(fy+0.5);
+                ui->graph->points.insert(QPair< int , int >(ix,iy));
+                ui->graph->repaint();
+            }
+        }
     }
 }
 
@@ -203,10 +212,10 @@ void MainWindow::on_lineDraw_button_clicked()
        )
     {
         if(ui->graph->recent.size()==2){
-            ui->dda_start_x->setText(ui->graph->recent[0].first);
-            ui->dda_start_y->setText(ui->graph->recent[0].second);
-            ui->dda_end_x->setText(ui->graph->recent[1].first);
-            ui->dda_end_y->setText(ui->graph->recent[1].second);
+            ui->dda_start_x->setText(ui->graph->recent[1].first);
+            ui->dda_start_y->setText(ui->graph->recent[1].second);
+            ui->dda_end_x->setText(ui->graph->recent[0].first);
+            ui->dda_end_y->setText(ui->graph->recent[0].second);
         }
         else{
             statusBar()->showMessage("Coordinates not sufficient",2000);
@@ -233,20 +242,107 @@ void MainWindow::on_lineDraw_button_clicked()
     statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);
 }
 
-void MainWindow::on_tabSelector_currentIndexChanged(int index)
+// Circle Drawing algorithm
+
+// Cartesian form
+void MainWindow::drawCircleCartesian(int cx, int cy, float r){
+    ui->graph->points.insert(QPair< int , int >(cx,cy));
+    ui->graph->repaint();
+    int ixR = cx;
+    int ixL = cx-1;
+    int iy = cy;
+    float diff;
+    do{
+        diff = sqrt(r*r-(ixR-cx)*(ixR-cx));
+        ui->graph->points.insert(QPair< int , int >(ixR,iy+diff));
+        ui->graph->points.insert(QPair< int , int >(ixR,iy-diff));
+        ui->graph->points.insert(QPair< int , int >(ixL,iy+diff));
+        ui->graph->points.insert(QPair< int , int >(ixL,iy-diff));
+        ui->graph->repaint();
+        ixR++;
+        ixL--;
+    }
+    while (ixR<=(int)(1.42*(cx+r))); // root2 is 1.414 so took 1.42
+
+    int iyU = cy;
+    int iyD = cy-1;
+    int ix = cx;
+    do{
+        diff = sqrt(r*r-(iyU-cy)*(iyU-cy));
+        ui->graph->points.insert(QPair< int , int >(ix+diff,iyU));
+        ui->graph->points.insert(QPair< int , int >(ix-diff,iyU));
+        ui->graph->points.insert(QPair< int , int >(ix+diff,iyD));
+        ui->graph->points.insert(QPair< int , int >(ix-diff,iyD));
+        ui->graph->repaint();
+        iyU++;
+        iyD--;
+    }
+    while (iyU<=(int)(1.42*(cy+r))); // root2 is 1.414 so took 1.42
+}
+
+// Polar Form
+void MainWindow::drawCirclePolar(int cx, int cy, float r){
+    ui->graph->points.insert(QPair< int , int >(cx,cy));
+    ui->graph->repaint();
+    int ix = cx;
+    int iy = cy;
+    float delTheta = 1/r;
+    float theta = 0;
+    do{
+        float cosTheta = r*cos(theta);
+        float sinTheta = r*sin(theta);
+        ui->graph->points.insert(QPair< int , int >(ix+cosTheta,iy+sinTheta));
+        ui->graph->points.insert(QPair< int , int >(ix+cosTheta,iy-sinTheta));
+        ui->graph->points.insert(QPair< int , int >(ix-cosTheta,iy+sinTheta));
+        ui->graph->points.insert(QPair< int , int >(ix-cosTheta,iy-sinTheta));
+        ui->graph->repaint();
+        theta += delTheta;
+    }
+    while (theta<=1.571); // pi = 3.141 => pi/2 = 1.570795
+}
+void MainWindow::on_circleDrawButton_clicked()
 {
-    ui->lineDrawingTab->hide();
-    ui->circleDrawingTab->hide();
-//    ui->lineDrawingTab->hide();
-    switch (index) {
-        case 0:
-           ui->lineDrawingTab->show();
-           break;
-        case 1:
-           ui->circleDrawingTab->show();
-           break;
-//        case 2:
-//           ui->lineDrawingTab->show();
-//           break;
+    if( ui->circleCenterX->text() == "" || ui->circleCenterY->text() == "" )
+    {
+        if(ui->graph->recent.size()>0){
+            ui->circleCenterX->setText(ui->graph->recent[0].first);
+            ui->circleCenterY->setText(ui->graph->recent[0].second);
         }
+        else{
+            statusBar()->showMessage("Center not specified",2000);
+            return;
+        }
+    }
+    if( ui->circleRadius->text() == "")
+    {
+        if(ui->graph->recent.size()>1){
+            int x1 = (ui->graph->recent[0].first).toInt();
+            int y1 = (ui->graph->recent[0].second).toInt();
+            int x2 = (ui->graph->recent[1].first).toInt();
+            int y2 = (ui->graph->recent[1].second).toInt();
+            ui->circleRadius->setText(QString::number((sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)))));
+        }
+        else{
+            statusBar()->showMessage("Radiusr not specified",2000);
+            return;
+        }
+    }
+    int cx = (ui->circleCenterX->text()).toInt();
+    int cy = (ui->circleCenterY->text()).toInt();
+    float r = (ui->circleRadius->text()).toFloat();
+    QTime timer;
+    timer.start();
+    switch(ui->circleDrawMethod->currentIndex()){
+        case 0:
+            drawCircleCartesian(cx,cy,r);
+            break;
+        case 1:
+            drawCirclePolar(cx,cy,r);
+            break;
+        case 2:
+            // drawCircleBresenham(cx,cy,r);
+            break;
+    }
+    statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);
+
 }

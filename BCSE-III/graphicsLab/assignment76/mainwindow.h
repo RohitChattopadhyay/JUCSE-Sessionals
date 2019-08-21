@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QVector>
 #include <QPair>
+#include <QtCore/qmath.h>
 
 namespace Ui {
 class MainWindow;
@@ -40,12 +41,11 @@ private slots:
         void bresenhamPlotLineLow(int,int,int,int);
         void bresenhamPlotLineHigh(int,int,int,int);
 
+        // Circle Drawing Algorithm
+        void drawCircleCartesian(int,int,float);
+        void drawCirclePolar(int,int,float);
 
-        void on_comboBox_currentIndexChanged(int index);
-
-        void on_tabSelector_currentIndexChanged(int index);
-
-        void on_tabSelector_activated(int index);
+        void on_circleDrawButton_clicked();
 
 private:
     Ui::MainWindow *ui;

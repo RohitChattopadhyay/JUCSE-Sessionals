@@ -54,8 +54,8 @@ void graph_qWidget::paintEvent(QPaintEvent *pe) {
     painter.setPen(QPen(Qt::white, ker, Qt::SolidLine));
     painter.drawPoint(half-ker/2,half-ker/2);
     painter.setPen(QPen(Qt::yellow, ker, Qt::SolidLine));
-
-    for(auto it =  points.begin(); it != points.end() ; ++it)
+    QSet<QPair<int,int> >::iterator it;
+    for(it =  points.begin(); it != points.end() ; ++it)
         painter.drawPoint(ker*it->first + width()/2-ker/2,height()/2 -  ker*it->second-ker/2);
 
 }
