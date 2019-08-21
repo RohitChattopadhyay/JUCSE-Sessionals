@@ -38,12 +38,7 @@ void MainWindow::Mouse_Pressed()
     int xCord = (ui->graph->x - ui->graph->width()/2)/ker;
     int yCord = (ui->graph->height()/2 - ui->graph->y)/ker;
     ui->graph->points.insert(QPair< int , int >(xCord,yCord));
-    if(ui->graph->recent.size()<2)
-        ui->graph->recent.push_back(QPair< QString , QString >(QString::number(xCord),QString::number(yCord)));
-    else{
-        ui->graph->recent.pop_back();
-        ui->graph->recent.push_front(QPair< QString , QString >(QString::number(xCord),QString::number(yCord)));
-    }
+    ui->graph->recent.push_front(QPair< QString , QString >(QString::number(xCord),QString::number(yCord)));
     statusBar()->showMessage("Plotted: " + QString::number(xCord) + "," + QString::number(yCord),2000);
     ui->graph->repaint();
 
@@ -97,7 +92,20 @@ void MainWindow::drawLineParametric(int x0, int y0, int x1, int y1){
         float m = float(y1-y0)/float(x1-x0);
         float c = float(x0*y1-x1*y0)/float(x0-x1);
         if(abs(m)>1){
-
+            if(y0>y1){
+                int temp = x0;
+                x0 = x1;
+                x1 = temp;
+                temp = y0;
+                y0 = y1;
+                y1 = temp;
+            }
+            for(int iy = y0;iy<=y1; ++iy){
+                float fx = (iy - c)/m ; // x = (y-c)/m
+                int ix = (int)(fx+0.5);
+                ui->graph->points.insert(QPair< int , int >(ix,iy));
+                ui->graph->repaint();
+            }
         }
         else{
             for(int ix = x0;ix<=x1; ++ix){
@@ -202,11 +210,11 @@ void MainWindow::on_lineDraw_button_clicked()
             ui->dda_end_y->text() == ""
        )
     {
-        if(ui->graph->recent.size()==2){
-            ui->dda_start_x->setText(ui->graph->recent[1].first);
-            ui->dda_start_y->setText(ui->graph->recent[1].second);
-            ui->dda_end_x->setText(ui->graph->recent[0].first);
-            ui->dda_end_y->setText(ui->graph->recent[0].second);
+        if(ui->graph->recent.size()>1){
+            ui->dda_start_x->setText(ui->graph->recent[0].first);
+            ui->dda_start_y->setText(ui->graph->recent[0].second);
+            ui->dda_end_x->setText(ui->graph->recent[1].first);
+            ui->dda_end_y->setText(ui->graph->recent[1].second);
         }
         else{
             statusBar()->showMessage("Coordinates not sufficient",2000);
@@ -339,7 +347,7 @@ void MainWindow::on_circleDrawButton_clicked()
 {
     if( ui->circleCenterX->text() == "" || ui->circleCenterY->text() == "" )
     {
-        if(ui->graph->recent.size()>0){
+        if(ui->graph->recent.size()>1){
             ui->circleCenterX->setText(ui->graph->recent[0].first);
             ui->circleCenterY->setText(ui->graph->recent[0].second);
         }
