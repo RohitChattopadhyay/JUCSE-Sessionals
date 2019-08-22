@@ -50,6 +50,10 @@ private slots:
         void drawEllipseBresenham(int, int, float, float);
         void on_ellipseDrawButton_clicked();
 
+        void on_brushColor_currentIndexChanged(int index);
+
+        void on_gridBgColor_textEdited(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     QLabel *statusLabel;

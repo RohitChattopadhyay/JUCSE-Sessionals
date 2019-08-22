@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "graph_qwidget.h"
+#define insertPoint(x,y) ui->graph->points.insert(QPair<QPair<int , int>,int >(QPair< int , int >(x,y),ui->graph->brushColorIdx))
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -37,7 +38,7 @@ void MainWindow::Mouse_Pressed()
     int ker = ui->graph->ker;
     int xCord = (ui->graph->x - ui->graph->width()/2)/ker;
     int yCord = (ui->graph->height()/2 - ui->graph->y)/ker;
-    ui->graph->points.insert(QPair< int , int >(xCord,yCord));
+    insertPoint(xCord,yCord);
     ui->graph->recent.push_front(QPair< QString , QString >(QString::number(xCord),QString::number(yCord)));
     statusBar()->showMessage("Plotted: " + QString::number(xCord) + "," + QString::number(yCord),2000);
     ui->graph->repaint();
@@ -76,7 +77,7 @@ void MainWindow::on_clearButton_clicked()
 void MainWindow::drawLineParametric(int x0, int y0, int x1, int y1){
     if(x0==x1){
         for(int iy = y0;iy<=y1; ++iy){
-            ui->graph->points.insert(QPair< int , int >(x0,iy));
+            insertPoint(x0,iy);
             ui->graph->repaint();
         }
     }
@@ -103,7 +104,7 @@ void MainWindow::drawLineParametric(int x0, int y0, int x1, int y1){
             for(int iy = y0;iy<=y1; ++iy){
                 float fx = (iy - c)/m ; // x = (y-c)/m
                 int ix = (int)(fx+0.5);
-                ui->graph->points.insert(QPair< int , int >(ix,iy));
+                insertPoint(ix,iy);
                 ui->graph->repaint();
             }
         }
@@ -111,7 +112,7 @@ void MainWindow::drawLineParametric(int x0, int y0, int x1, int y1){
             for(int ix = x0;ix<=x1; ++ix){
                 float fy = m*ix + c ; // y = mx + c
                 int iy = (int)(fy+0.5);
-                ui->graph->points.insert(QPair< int , int >(ix,iy));
+                insertPoint(ix,iy);
                 ui->graph->repaint();
             }
         }
@@ -136,7 +137,7 @@ void MainWindow::drawLineDDA(float x0, float y0, float x1, float y1){
     while(i<=step){
         graphX = x;
         graphY = y;
-        ui->graph->points.insert(QPair< int , int >(graphX,graphY));
+        insertPoint(graphX,graphY);
         x += dx;
         y += dy;
         i++;
@@ -156,7 +157,7 @@ void MainWindow::bresenhamPlotLineLow(int x0,int y0,int x1, int y1){
     int D = 2*dy - dx;
     int y = y0;
     for(int x = x0; x<=x1;x++){
-        ui->graph->points.insert(QPair< int , int >(x,y));
+        insertPoint(x,y);
         ui->graph->repaint();
         if(D>0){
             y += yi;
@@ -176,7 +177,7 @@ void MainWindow::bresenhamPlotLineHigh(int x0,int y0,int x1, int y1){
     int D = 2*dx - dy;
     int x = x0;
     for(int y = y0; y<=y1;y++){
-        ui->graph->points.insert(QPair< int , int >(x,y));
+        insertPoint(x,y);
         ui->graph->repaint();
         if(D>0){
             x += xi;
@@ -245,7 +246,7 @@ void MainWindow::on_lineDraw_button_clicked()
 
 // Cartesian form
 void MainWindow::drawCircleCartesian(int cx, int cy, float r){
-    ui->graph->points.insert(QPair< int , int >(cx,cy));
+    insertPoint(cx,cy);
     ui->graph->repaint();
     int ixR = cx;
     int ixL = cx-1;
@@ -253,35 +254,35 @@ void MainWindow::drawCircleCartesian(int cx, int cy, float r){
     float diff;
     do{
         diff = sqrt(r*r-(ixR-cx)*(ixR-cx));
-        ui->graph->points.insert(QPair< int , int >(ixR,iy+diff));
-        ui->graph->points.insert(QPair< int , int >(ixR,iy-diff));
-        ui->graph->points.insert(QPair< int , int >(ixL,iy+diff));
-        ui->graph->points.insert(QPair< int , int >(ixL,iy-diff));
+        insertPoint(ixR,iy+diff);
+        insertPoint(ixR,iy-diff);
+        insertPoint(ixL,iy+diff);
+        insertPoint(ixL,iy-diff);
         ui->graph->repaint();
         ixR++;
         ixL--;
     }
-    while (ixR<=ceil((cx+r)/1.4)); // root2 is 1.414 so took 1.4
+    while (ixR<=ceil((cx+r))); // root2 is 1.414 so took 1.4
 
     int iyU = cy;
     int iyD = cy-1;
     int ix = cx;
     do{
         diff = sqrt(r*r-(iyU-cy)*(iyU-cy));
-        ui->graph->points.insert(QPair< int , int >(ix+diff,iyU));
-        ui->graph->points.insert(QPair< int , int >(ix-diff,iyU));
-        ui->graph->points.insert(QPair< int , int >(ix+diff,iyD));
-        ui->graph->points.insert(QPair< int , int >(ix-diff,iyD));
+        insertPoint(ix+diff,iyU);
+        insertPoint(ix-diff,iyU);
+        insertPoint(ix+diff,iyD);
+        insertPoint(ix-diff,iyD);
         ui->graph->repaint();
         iyU++;
         iyD--;
     }
-    while (iyU<=ceil((cy+r)/1.4)); // root2 is 1.414 so took 1.4
+    while (iyU<=ceil((cy+r))); // root2 is 1.414 so took 1.4
 }
 
 // Polar Form
 void MainWindow::drawCirclePolar(int cx, int cy, float r){
-    ui->graph->points.insert(QPair< int , int >(cx,cy));
+    insertPoint(cx,cy);
     ui->graph->repaint();
     int ix = cx;
     int iy = cy;
@@ -290,10 +291,10 @@ void MainWindow::drawCirclePolar(int cx, int cy, float r){
     do{
         float cosTheta = r*cos(theta);
         float sinTheta = r*sin(theta);
-        ui->graph->points.insert(QPair< int , int >(ix+cosTheta,iy+sinTheta));
-        ui->graph->points.insert(QPair< int , int >(ix+cosTheta,iy-sinTheta));
-        ui->graph->points.insert(QPair< int , int >(ix-cosTheta,iy+sinTheta));
-        ui->graph->points.insert(QPair< int , int >(ix-cosTheta,iy-sinTheta));
+        insertPoint(ix+cosTheta,iy+sinTheta);
+        insertPoint(ix+cosTheta,iy-sinTheta);
+        insertPoint(ix-cosTheta,iy+sinTheta);
+        insertPoint(ix-cosTheta,iy-sinTheta);
         ui->graph->repaint();
         theta += delTheta;
     }
@@ -302,14 +303,14 @@ void MainWindow::drawCirclePolar(int cx, int cy, float r){
 // Bresenham Mid Point
 void MainWindow::drawCircleBresenham(int cx, int cy, float r){
     int x = r, y = 0;
-    ui->graph->points.insert(QPair< int , int >( cx, cy));
-    ui->graph->points.insert(QPair< int , int >( x + cx, y + cy));
+    insertPoint(cx,cy);
+    insertPoint(x + cx,y + cy);
 
     if (r > 0)
     {
-        ui->graph->points.insert(QPair< int , int >( x + cx, -y + cy));
-        ui->graph->points.insert(QPair< int , int >( y + cx, x + cy));
-        ui->graph->points.insert(QPair< int , int >( -y + cx, x + cy));
+        insertPoint( x + cx, -y + cy);
+        insertPoint( y + cx, x + cy);
+        insertPoint( -y + cx, x + cy);
     }
 
     int P = 1 - r;
@@ -327,17 +328,17 @@ void MainWindow::drawCircleBresenham(int cx, int cy, float r){
         if (x < y)
             break;
 
-        ui->graph->points.insert(QPair< int , int >( x + cx, y + cy));
-        ui->graph->points.insert(QPair< int , int >( -x + cx, y + cy));
-        ui->graph->points.insert(QPair< int , int >( x + cx, -y + cy));
-        ui->graph->points.insert(QPair< int , int >( -x + cx, -y + cy));
+        insertPoint( x + cx, y + cy);
+        insertPoint( -x + cx, y + cy);
+        insertPoint( x + cx, -y + cy);
+        insertPoint( -x + cx, -y + cy);
 
         if (x != y)
         {
-            ui->graph->points.insert(QPair< int , int >( y + cx, x + cy));
-            ui->graph->points.insert(QPair< int , int >( -y + cx, x + cy));
-            ui->graph->points.insert(QPair< int , int >( y + cx, -x + cy));
-            ui->graph->points.insert(QPair< int , int >( -y + cx, -x + cy));
+            insertPoint( y + cx, x + cy);
+            insertPoint( -y + cx, x + cy);
+            insertPoint( y + cx, -x + cy);
+            insertPoint( -y + cx, -x + cy);
         }
         ui->graph->repaint();
     }
@@ -348,8 +349,8 @@ void MainWindow::on_circleDrawButton_clicked()
     if( ui->circleCenterX->text() == "" || ui->circleCenterY->text() == "" )
     {
         if(ui->graph->recent.size()>1){
-            ui->circleCenterX->setText(ui->graph->recent[0].first);
-            ui->circleCenterY->setText(ui->graph->recent[0].second);
+            ui->circleCenterX->setText(ui->graph->recent[1].first);
+            ui->circleCenterY->setText(ui->graph->recent[1].second);
         }
         else{
             statusBar()->showMessage("Center not specified",2000);
@@ -393,7 +394,7 @@ void MainWindow::on_circleDrawButton_clicked()
 
 // Cartesian Form
 void MainWindow::drawEllipseCartesian(int cx,int cy,float a, float b){
-    ui->graph->points.insert(QPair< int , int >(cx,cy));
+    insertPoint(cx,cy);
     ui->graph->repaint();
     float aSq = a*a;
     float bSq = b*b;
@@ -402,11 +403,11 @@ void MainWindow::drawEllipseCartesian(int cx,int cy,float a, float b){
     ixR = cx;
     ixL = cx;
     do {
-        diff = sqrt(bSq*(1-((ixR-cx)*(ixR-cx))/aSq));
-        ui->graph->points.insert(QPair< int , int >( ixR, cy + diff));
-        ui->graph->points.insert(QPair< int , int >( ixR, cy - diff));
-        ui->graph->points.insert(QPair< int , int >( ixL, cy + diff));
-        ui->graph->points.insert(QPair< int , int >( ixL, cy - diff));
+        diff = sqrt(bSq*(1-((ixR-cx)*(ixR-cx))/aSq));                
+        insertPoint( ixR, cy + diff);
+        insertPoint( ixR, cy - diff);
+        insertPoint( ixL, cy + diff);
+        insertPoint( ixL, cy - diff);
         ui->graph->repaint();
         ixR++;
         ixL--;
@@ -417,11 +418,11 @@ void MainWindow::drawEllipseCartesian(int cx,int cy,float a, float b){
     iyD = cy;
     iyU = cy;
     do {
-        diff = sqrt(aSq*(1-((iyU-cy)*(iyU-cy))/bSq));
-        ui->graph->points.insert(QPair< int , int >( cx + diff, iyU));
-        ui->graph->points.insert(QPair< int , int >( cx - diff, iyU));
-        ui->graph->points.insert(QPair< int , int >( cx + diff, iyD));
-        ui->graph->points.insert(QPair< int , int >( cx - diff, iyD));
+        diff = sqrt(aSq*(1-((iyU-cy)*(iyU-cy))/bSq));        
+        insertPoint( cx + diff, iyU);
+        insertPoint( cx - diff, iyU);
+        insertPoint( cx + diff, iyD);
+        insertPoint( cx - diff, iyD);
         ui->graph->repaint();
         iyU++;
         iyD--;
@@ -430,7 +431,7 @@ void MainWindow::drawEllipseCartesian(int cx,int cy,float a, float b){
 }
 // Polar form
 void MainWindow::drawEllipsePolar(int cx, int cy, float a, float b){
-    ui->graph->points.insert(QPair< int , int >(cx,cy));
+    insertPoint(cx,cy);
     ui->graph->repaint();
     int ix = cx;
     int iy = cy;
@@ -439,10 +440,11 @@ void MainWindow::drawEllipsePolar(int cx, int cy, float a, float b){
     do{
         float cosTheta = a*cos(theta);
         float sinTheta = b*sin(theta);
-        ui->graph->points.insert(QPair< int , int >(ix+cosTheta,iy+sinTheta));
-        ui->graph->points.insert(QPair< int , int >(ix+cosTheta,iy-sinTheta));
-        ui->graph->points.insert(QPair< int , int >(ix-cosTheta,iy+sinTheta));
-        ui->graph->points.insert(QPair< int , int >(ix-cosTheta,iy-sinTheta));
+
+        insertPoint(ix+cosTheta,iy+sinTheta);
+        insertPoint(ix+cosTheta,iy-sinTheta);
+        insertPoint(ix-cosTheta,iy+sinTheta);
+        insertPoint(ix-cosTheta,iy-sinTheta);
         ui->graph->repaint();
         theta += delTheta;
     }
@@ -460,10 +462,10 @@ void MainWindow::drawEllipseBresenham(int xc, int yc, float rx, float ry){
 
     while (dx < dy)
     {
-        ui->graph->points.insert(QPair< int , int >(x + xc,y + yc));
-        ui->graph->points.insert(QPair< int , int >(-x + xc,y + yc));
-        ui->graph->points.insert(QPair< int , int >(x + xc,-y + yc));
-        ui->graph->points.insert(QPair< int , int >(-x + xc,-y + yc));
+        insertPoint(x + xc,y + yc);
+        insertPoint(-x + xc,y + yc);
+        insertPoint(x + xc,-y + yc);
+        insertPoint(-x + xc,-y + yc);
         ui->graph->repaint();
         if (d1 < 0)
         {
@@ -485,10 +487,10 @@ void MainWindow::drawEllipseBresenham(int xc, int yc, float rx, float ry){
 
     while (y >= 0)
     {
-        ui->graph->points.insert(QPair< int , int >(x + xc,y + yc));
-        ui->graph->points.insert(QPair< int , int >(-x + xc,y + yc));
-        ui->graph->points.insert(QPair< int , int >(x + xc,-y + yc));
-        ui->graph->points.insert(QPair< int , int >(-x + xc,-y + yc));
+        insertPoint(x + xc,y + yc);
+        insertPoint(-x + xc,y + yc);
+        insertPoint(x + xc,-y + yc);
+        insertPoint(-x + xc,-y + yc);
         ui->graph->repaint();
         if (d2 > 0)
         {
@@ -538,4 +540,14 @@ void MainWindow::on_ellipseDrawButton_clicked()
     }
     statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);
 
+}
+
+void MainWindow::on_brushColor_currentIndexChanged(int index)
+{
+    ui->graph->brushColorIdx = index;
+}
+
+void MainWindow::on_gridBgColor_textEdited(const QString &arg)
+{
+    ui->graph->setStyleSheet("background-color: "+arg);
 }

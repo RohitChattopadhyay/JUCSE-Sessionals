@@ -19,10 +19,11 @@ public:
     void mousePressEvent(QMouseEvent *ev);
     void leaveEvent(QEvent *);
     void paintEvent(QPaintEvent *);
-    QSet<QPair<int,int> > points = {};
+    QSet<QPair<QPair<int,int> , int > > points = {};
     QVector<QPair<QString,QString> > recent = {};
     int ker;
     int x,y;
+    int brushColorIdx;
 
 signals:
     void Mouse_Pressed();

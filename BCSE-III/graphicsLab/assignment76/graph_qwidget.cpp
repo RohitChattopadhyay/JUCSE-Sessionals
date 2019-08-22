@@ -5,6 +5,7 @@
 graph_qWidget::graph_qWidget(QWidget *parent) : QWidget(parent)
 {
     ker = 3;
+    brushColorIdx = 0;
 }
 
 void graph_qWidget::mouseMoveEvent(QMouseEvent *ev){
@@ -53,9 +54,27 @@ void graph_qWidget::paintEvent(QPaintEvent *pe) {
 
     painter.setPen(QPen(Qt::white, ker, Qt::SolidLine));
     painter.drawPoint(half-ker/2,half-ker/2);
-    painter.setPen(QPen(Qt::yellow, ker, Qt::SolidLine));
-    QSet<QPair<int,int> >::iterator it;
-    for(it =  points.begin(); it != points.end() ; ++it)
-        painter.drawPoint(ker*it->first + width()/2-ker/2,height()/2 -  ker*it->second-ker/2);
-
+    QSet<QPair<QPair<int,int>, int> >::iterator it;
+    QColor brushColor;
+    for(it =  points.begin(); it != points.end() ; ++it){
+        switch (it->second) {
+        case 0:
+            brushColor = Qt::yellow;
+            break;
+        case 1:
+            brushColor = Qt::red;
+            break;
+        case 2:
+            brushColor = Qt::black;
+            break;
+        case 3:
+            brushColor = Qt::blue;
+            break;
+        case 4:
+            brushColor = Qt::white;
+            break;
+        }
+        painter.setPen(QPen(brushColor, ker, Qt::SolidLine));
+        painter.drawPoint(ker*it->first.first + width()/2-ker/2,height()/2 -  ker*it->first.second-ker/2);
+    }
 }
