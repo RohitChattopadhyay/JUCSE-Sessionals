@@ -6,17 +6,19 @@
 #include <QGraphicsTextItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QHBoxLayout>
+#include <QTime>
 #include <iostream>
 #include <utility>
+
 using namespace std;
 
 class Graph : public QGraphicsView
 {
-    Q_OBJECT
-
+    Q_OBJECT    
     int pixelsize;
     int no_of_pixels;
     int mouseclickStatus;
+    int brushColor;
     pair<float, float> points[2];
 
     class MyGraphicsScene : public QGraphicsScene
@@ -26,7 +28,7 @@ class Graph : public QGraphicsView
     public:
         MyGraphicsScene(Graph *p)
         {
-            parent = p;
+            parent = p;            
         }
 
         void mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -46,6 +48,7 @@ class Graph : public QGraphicsView
     void GenerateGraph()
     {
         graphscene = new MyGraphicsScene(this);
+        graphscene->setBackgroundBrush(Qt::darkRed);
         for (int i = -no_of_pixels / 2; i <= no_of_pixels / 2; i++)
         {
             for (int j = -no_of_pixels / 2; j <= no_of_pixels / 2; j++)
@@ -64,7 +67,7 @@ class Graph : public QGraphicsView
                      << "0" << endl;
             }
             QBrush br(Qt::SolidPattern);
-            br.setColor(Qt::lightGray);
+            br.setColor(Qt::darkGray);
             rect->setBrush(br);
             rect->update();
         }
@@ -79,11 +82,12 @@ class Graph : public QGraphicsView
                      << "0" << endl;
             }
             QBrush br(Qt::SolidPattern);
-            br.setColor(Qt::lightGray);
+            br.setColor(Qt::darkGray);
             rect->setBrush(br);
             rect->update();
         }
         this->setScene(graphscene);
+
         mouseclickStatus = 0;
     }
 
@@ -115,7 +119,19 @@ public:
             QGraphicsRectItem *rect = qgraphicsitem_cast<QGraphicsRectItem *>(item);
 
             QBrush *br = new QBrush(Qt::SolidPattern);
-            br->setColor(Qt::blue);
+            switch(brushColor){
+                case 0:
+                    br->setColor(Qt::yellow);
+                    break;
+                case 1:
+                    br->setColor(Qt::green);
+                    break;
+                case 2:
+                    br->setColor(Qt::red);
+                    break;
+            }
+
+
             rect->setBrush(*br);
             rect->update();
         }
@@ -141,6 +157,9 @@ signals:
 public slots:
     void GraphPlotSlot(int x, int y){
         this->GraphPointPaint(x,y);
+    };
+    void GraphPlotColorSlot(int x){
+        brushColor = x;
     };
     void GraphResetSlot(int p, int n)
     {
