@@ -26,8 +26,6 @@ int main(int argc, char *argv[])
     QObject::connect(graph,SIGNAL(pointSelect(pair<int,int>)),controlpanel,SLOT(getPointSelect(pair<int,int>)));
     QObject::connect(graph,SIGNAL(pointHover(pair<int,int>)),controlpanel,SLOT(getPointHover(pair<int,int>)));
 
-
-
     window->setLayout(parentlayout);
     window->show();
     return app.exec();

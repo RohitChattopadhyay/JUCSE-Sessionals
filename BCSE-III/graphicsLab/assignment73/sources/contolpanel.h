@@ -10,6 +10,7 @@
 #include <string>
 #include <utility>
 #include <iostream>
+#include <QtCore/qmath.h>
 #include <QTime>
 
 using namespace std;
@@ -173,7 +174,7 @@ public:
         circleDrawRadius->setPlaceholderText("In pixels");
 
         QPushButton *circleButton = new QPushButton("Draw Circle");
-        QObject::connect(circleButton, SIGNAL(clicked()), this, SLOT(drawLineHandler()));
+        QObject::connect(circleButton, SIGNAL(clicked()), this, SLOT(drawCircleHandler()));
 
         circleDrawingLayout->addWidget(circleCenterLabel);
         circleDrawingLayout->addWidget(circleDrawCenterX);
@@ -251,7 +252,7 @@ public:
     float abs(float a){
         return a>0?a:(-1*a);
     }
-    void drawParametric(){
+    void lineDrawParametric(){
         float  x0, y0, x1, y1;
         x0 = (lineDrawStartX->text()).toInt();
         y0 = -1*(lineDrawStartY->text()).toInt();
@@ -290,7 +291,7 @@ public:
         }
     }
 
-    void drawDDA(){
+    void lineDrawDDA(){
         float x, y, x1, y1, x2, y2, dx, dy, step;
         int i;
         x1 = (lineDrawStartX->text()).toInt();
@@ -353,7 +354,7 @@ public:
             D += 2*dx;
         }
     }
-    void drawBresenham(){
+    void lineDrawBresenham(){
         float x0, y0, x1, y1;
         x0 = (lineDrawStartX->text()).toInt();
         y0 = -1 * (lineDrawStartY->text()).toInt();
@@ -371,6 +372,111 @@ public:
             else
                 bresenhamPlotLineHigh(x0,y0,x1,y1);
         }
+    }
+
+    // Circle drawing
+    void circleDrawCartesian(int cx, int cy, float r){
+        emit GraphPlotSignal(cx, cy);
+        int ixR = cx;
+        int ixL = cx-1;
+        int iy = cy;
+        float diff;
+        do{
+            diff = sqrt(r*r-(ixR-cx)*(ixR-cx));
+            emit GraphPlotSignal(ixR,iy+diff);
+            emit GraphPlotSignal(ixR,iy-diff);
+            emit GraphPlotSignal(ixL,iy+diff);
+            emit GraphPlotSignal(ixL,iy-diff);
+            ixR++;
+            ixL--;
+        }
+        while (ixR<=ceil((cx+r/1.4)));
+
+        int iyU = cy;
+        int iyD = cy-1;
+        int ix = cx;
+        do{
+            diff = sqrt(r*r-(iyU-cy)*(iyU-cy));
+            emit GraphPlotSignal(ix+diff,iyU);
+            emit GraphPlotSignal(ix-diff,iyU);
+            emit GraphPlotSignal(ix+diff,iyD);
+            emit GraphPlotSignal(ix-diff,iyD);
+            iyU++;
+            iyD--;
+        }
+        while (iyU<=ceil((cy+r/1.4))); // root2 is 1.414 so took 1.4
+    }
+    void circleDrawPolar(int cx, int cy, float r){
+        emit GraphPlotSignal(cx,cy);
+        int ix = cx;
+        int iy = cy;
+        float delTheta = 1/r;
+        float theta = 0;
+        do{
+            float cosTheta = r*cos(theta);
+            float sinTheta = r*sin(theta);
+            emit GraphPlotSignal(ix+cosTheta,iy+sinTheta);
+            emit GraphPlotSignal(ix+cosTheta,iy-sinTheta);
+            emit GraphPlotSignal(ix-cosTheta,iy+sinTheta);
+            emit GraphPlotSignal(ix-cosTheta,iy-sinTheta);
+            theta += delTheta;
+        }
+        while (theta<=1.571); // pi = 3.141 => pi/2 = 1.570795
+    }
+    void circleDrawMidPoint(int cx, int cy, float r){
+        int x = r, y = 0;
+        emit GraphPlotSignal(cx,cy);
+        emit GraphPlotSignal(cx + r,cy);
+        emit GraphPlotSignal(cx - r,cy);
+        emit GraphPlotSignal(cx,cy + r);
+        emit GraphPlotSignal(cx,cy - r);
+
+        if (r > 0)
+        {
+            emit GraphPlotSignal( x + cx, -y + cy);
+            emit GraphPlotSignal( y + cx, x + cy);
+            emit GraphPlotSignal( -y + cx, x + cy);
+        }
+
+        int P = 1 - r;
+        while (x > y)
+        {
+            y++;
+            if (P <= 0)
+                P = P + 2*y + 1;
+            else
+            {
+                x--;
+                P = P + 2*y - 2*x + 1;
+            }
+
+            if (x < y)
+                break;
+
+            emit GraphPlotSignal( x + cx, y + cy);
+            emit GraphPlotSignal( -x + cx, y + cy);
+            emit GraphPlotSignal( x + cx, -y + cy);
+            emit GraphPlotSignal( -x + cx, -y + cy);
+
+            if (x != y)
+            {
+                emit GraphPlotSignal( y + cx, x + cy);
+                emit GraphPlotSignal( -y + cx, x + cy);
+                emit GraphPlotSignal( y + cx, -x + cy);
+                emit GraphPlotSignal( -y + cx, -x + cy);
+            }
+        }
+    }
+
+    // Ellipse drawing
+    void ellipseDrawCartesian(){
+
+    }
+    void ellipseDrawPolar(){
+
+    }
+    void ellipseDrawMidPoint(){
+
     }
 signals:
     void GraphResetSignal(int, int);
@@ -390,13 +496,36 @@ public slots:
         clock.start();
         switch(lineDrawingAlgoComboBox->currentIndex()){
             case 0:
-                this->drawDDA();
+                this->lineDrawDDA();
                 break;
             case 1:
-                this->drawBresenham();
+                this->lineDrawBresenham();
                 break;
             case 2:
-                this->drawParametric();
+                this->lineDrawParametric();
+                break;
+        }
+        timeTaken->setText("<b>Time Taken: </b>"+QString::number(clock.elapsed())+"ms");
+    }
+
+    void drawCircleHandler(){
+        emit GraphPlotColorSignal(setBrushColor->currentIndex());
+        int cx,cy;
+        float r;
+        cx = circleDrawCenterX->text().toInt();
+        cy = -1 * (circleDrawCenterY->text().toInt());
+        r  = abs(circleDrawRadius->text().toFloat());
+        QTime clock;
+        clock.start();
+        switch(circleDrawingAlgoComboBox->currentIndex()){
+            case 0:
+                this->circleDrawCartesian(cx,cy,r);
+                break;
+            case 1:
+                this->circleDrawPolar(cx,cy,r);
+                break;
+            case 2:
+                this->circleDrawMidPoint(cx,cy,r);
                 break;
         }
         timeTaken->setText("<b>Time Taken: </b>"+QString::number(clock.elapsed())+"ms");
