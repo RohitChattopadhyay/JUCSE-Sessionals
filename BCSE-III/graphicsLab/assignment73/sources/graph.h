@@ -33,8 +33,10 @@ class Graph : public QGraphicsView
 
         void mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
-            emit parent->pointSelect(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize));
-            parent->GraphPointPaint(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize);
+            int xCord = event->scenePos().x() / parent->pixelsize;
+            int yCord = event->scenePos().y() / parent->pixelsize;
+            emit parent->pointSelect(pair<int, int>(xCord , yCord ));
+            parent->GraphPointPaint(xCord, yCord);
         }
 
         void mouseMoveEvent(QGraphicsSceneMouseEvent *event)

@@ -12,6 +12,7 @@
 #include <iostream>
 #include <QtCore/qmath.h>
 #include <QTime>
+#include <QStack>
 
 using namespace std;
 
@@ -29,6 +30,8 @@ class ControlPanel : public QWidget
     QSpinBox *noOfPixelsSpinBox;
     QPushButton *setGraphButton;
     QComboBox *setBrushColor;
+    QStack<pair<int, int> > pointHistory;
+
     //members of drawing------------------------------------
     QComboBox *lineDrawingAlgoComboBox;
     QComboBox *circleDrawingAlgoComboBox;
@@ -625,8 +628,25 @@ public slots:
         emit GraphResetSignal(pixelsize, no_of_pixels);
     }
     void drawLineHandler(){
-
         float x0, y0, x1, y1;
+        if(
+                lineDrawStartX->text() == "" ||
+                lineDrawStartY->text() == "" ||
+                lineDrawEndX->text() == "" ||
+                lineDrawEndY->text() == ""
+          ){
+            if( pointHistory.size() >= 2 ){
+                lineDrawStartX->setText(QString::number(pointHistory.top().first));
+                lineDrawStartY->setText(QString::number(pointHistory.top().second));
+                pointHistory.pop();
+                lineDrawEndX->setText(QString::number(pointHistory.top().first));
+                lineDrawEndY->setText(QString::number(pointHistory.top().second));
+                pointHistory.pop();
+            }
+            else
+                return;
+        }
+
         x0 = (lineDrawStartX->text()).toInt();
         y0 = -1 * (lineDrawStartY->text()).toInt();
         x1 = (lineDrawEndX->text()).toInt();
@@ -650,6 +670,35 @@ public slots:
 
     void drawCircleHandler(){
         emit GraphPlotColorSignal(setBrushColor->currentIndex());
+        if(
+                circleDrawCenterX->text() == "" ||
+                circleDrawCenterY->text() == ""
+          ){
+            if( circleDrawRadius->text() == "" ){
+                if( pointHistory.size()>=2 ){
+                    int setX1 = pointHistory.top().first;
+                    int setY1 = pointHistory.top().second;
+                    pointHistory.pop();
+                    int setX2 = pointHistory.top().first;
+                    int setY2 = pointHistory.top().second;
+                    pointHistory.pop();
+                    circleDrawCenterX->setText(QString::number(setX2));
+                    circleDrawCenterY->setText(QString::number(setY2));
+                    float r =   qSqrt((setX1-setX2)*(setX1-setX2) + (setY1-setY2)*(setY1-setY2));
+                    circleDrawRadius->setText(QString::number(r));
+                }
+                else
+                    return;
+            }
+            else {
+                int setY2 = pointHistory.top().second;
+                pointHistory.pop();
+                circleDrawCenterX->setText(QString::number(pointHistory.top().first));
+                circleDrawCenterY->setText(QString::number(pointHistory.top().second));
+                pointHistory.pop();
+            }
+        }
+
         int cx,cy;
         float r;
         cx = circleDrawCenterX->text().toInt();
@@ -709,7 +758,9 @@ public slots:
     void getPointSelect(pair<int, int> point)
     {
         emit GraphPlotColorSignal(setBrushColor->currentIndex());
-        QString QShowPoint = "<b>Clicked on :</b> " + QString::number(point.first) + " " + QString::number(-1*point.second);
+        point.second *= -1;
+        QString QShowPoint = "<b>Clicked on :</b> " + QString::number(point.first) + " " + QString::number(point.second);
         clickCoordinate->setText(QShowPoint);
+        pointHistory.push(point);
     }
 };
