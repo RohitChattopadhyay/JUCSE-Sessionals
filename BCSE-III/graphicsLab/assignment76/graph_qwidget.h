@@ -14,7 +14,7 @@ class graph_qWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit graph_qWidget(QWidget *parent = nullptr);
+    explicit graph_qWidget(QWidget *parent = NULL);
     void mouseMoveEvent(QMouseEvent *ev);
     void mousePressEvent(QMouseEvent *ev);
     void leaveEvent(QEvent *);

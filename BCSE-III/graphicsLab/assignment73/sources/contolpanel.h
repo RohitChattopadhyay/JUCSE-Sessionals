@@ -161,7 +161,9 @@ public:
         circleDrawingAlgoComboBox = new QComboBox();
         circleDrawingAlgoComboBox->addItem("Cartesian form");
         circleDrawingAlgoComboBox->addItem("Polar form");
+        circleDrawingAlgoComboBox->addItem("Mid Point form");
         circleDrawingAlgoComboBox->addItem("Bresenham Mid Point form");
+        circleDrawingAlgoComboBox->addItem("Polygon Approximation");
         circleDrawingLayout->addWidget(circleDrawingAlgoComboBox);
 
         QLabel * circleCenterLabel = new QLabel("Center");
@@ -210,7 +212,7 @@ public:
         ellipseDrawMinor->setPlaceholderText("Minor Axis (2b)");
 
         QPushButton *ellipseButton = new QPushButton("Draw Ellipse");
-        QObject::connect(ellipseButton, SIGNAL(clicked()), this, SLOT(drawLineHandler()));
+        QObject::connect(ellipseButton, SIGNAL(clicked()), this, SLOT(drawEllipseHandler()));
 
         QHBoxLayout * ellipseLayoutTemp = new QHBoxLayout();
         ellipseLayoutTemp->addWidget(ellipseDrawCenterX);
@@ -252,12 +254,7 @@ public:
     float abs(float a){
         return a>0?a:(-1*a);
     }
-    void lineDrawParametric(){
-        float  x0, y0, x1, y1;
-        x0 = (lineDrawStartX->text()).toInt();
-        y0 = -1*(lineDrawStartY->text()).toInt();
-        x1 = (lineDrawEndX->text()).toInt();
-        y1 = -1*(lineDrawEndY->text()).toInt();
+    void lineDrawParametric(float x0, float y0, float x1, float y1){
         if(x0>x1){
             int temp = x0;
             x0 = x1;
@@ -291,13 +288,9 @@ public:
         }
     }
 
-    void lineDrawDDA(){
-        float x, y, x1, y1, x2, y2, dx, dy, step;
+    void lineDrawDDA(float x1,float y1,float x2,float y2){
+        float x, y, dx, dy, step;
         int i;
-        x1 = (lineDrawStartX->text()).toInt();
-        y1 = -1*(lineDrawStartY->text()).toInt();
-        x2 = (lineDrawEndX->text()).toInt();
-        y2 = -1*(lineDrawEndY->text()).toInt();
         dx = (x2 - x1);
         dy = (y2 - y1);
         if(abs(dx) >= abs(dy))
@@ -354,12 +347,7 @@ public:
             D += 2*dx;
         }
     }
-    void lineDrawBresenham(){
-        float x0, y0, x1, y1;
-        x0 = (lineDrawStartX->text()).toInt();
-        y0 = -1 * (lineDrawStartY->text()).toInt();
-        x1 = (lineDrawEndX->text()).toInt();
-        y1 = -1 * (lineDrawEndY->text()).toInt();
+    void lineDrawBresenham(float x0,float y0,float x1,float y1){
         if (abs(y1-y0) < abs(x1-x0)) {
             if (x0 > x1)
                 bresenhamPlotLineLow(x1,y1,x0,y0);
@@ -390,7 +378,7 @@ public:
             ixR++;
             ixL--;
         }
-        while (ixR<=ceil((cx+r/1.4)));
+        while (ixR<=ceil((cx+r/1.4))); // root2 is 1.414 so took 1.4
 
         int iyU = cy;
         int iyD = cy-1;
@@ -423,6 +411,19 @@ public:
         }
         while (theta<=1.571); // pi = 3.141 => pi/2 = 1.570795
     }
+    void circleDrawPolygon(int cx, int cy, float r){
+        float c = r / 1.414; // rcos45
+        emit GraphPlotSignal(cx,cy);
+        lineDrawBresenham(cx+r,cy,cx+c,cy+c);
+        lineDrawBresenham(cx,cy+r,cx+c,cy+c);
+        lineDrawBresenham(cx,cy+r,cx-c,cy+c);
+        lineDrawBresenham(cx-r,cy,cx-c,cy+c);
+        lineDrawBresenham(cx-r,cy,cx-c,cy-c);
+        lineDrawBresenham(cx,cy-r,cx-c,cy-c);
+        lineDrawBresenham(cx,cy-r,cx+c,cy-c);
+        lineDrawBresenham(cx+r,cy,cx+c,cy-c);
+    }
+
     void circleDrawMidPoint(int cx, int cy, float r){
         int x = r, y = 0;
         emit GraphPlotSignal(cx,cy);
@@ -460,6 +461,7 @@ public:
 
             if (x != y)
             {
+                // 8 way symmetry
                 emit GraphPlotSignal( y + cx, x + cy);
                 emit GraphPlotSignal( -y + cx, x + cy);
                 emit GraphPlotSignal( y + cx, -x + cy);
@@ -467,16 +469,148 @@ public:
             }
         }
     }
+    void circleBresenhamDrawMidPoint(int xc, int yc, int r){
+        emit GraphPlotSignal(xc,yc); //center
+        int x = 0, y = r;
+        int d = 3 - 2 * r;
+        // eight way symmetry
+        emit GraphPlotSignal(xc+x, yc+y);
+        emit GraphPlotSignal(xc-x, yc+y);
+        emit GraphPlotSignal(xc+x, yc-y);
+        emit GraphPlotSignal(xc-x, yc-y);
+        emit GraphPlotSignal(xc+y, yc+x);
+        emit GraphPlotSignal(xc-y, yc+x);
+        emit GraphPlotSignal(xc+y, yc-x);
+        emit GraphPlotSignal(xc-y, yc-x);
+        while (y >= x)
+        {
+            x++;
+
+            if (d > 0)
+            {
+                y--;
+                d = d + 4 * (x - y) + 10;
+            }
+            else
+                d = d + 4 * x + 6;
+            emit GraphPlotSignal(xc+x, yc+y);
+            emit GraphPlotSignal(xc-x, yc+y);
+            emit GraphPlotSignal(xc+x, yc-y);
+            emit GraphPlotSignal(xc-x, yc-y);
+            emit GraphPlotSignal(xc+y, yc+x);
+            emit GraphPlotSignal(xc-y, yc+x);
+            emit GraphPlotSignal(xc+y, yc-x);
+            emit GraphPlotSignal(xc-y, yc-x);
+        }
+    }
 
     // Ellipse drawing
-    void ellipseDrawCartesian(){
+    void ellipseDrawCartesian(int cx,int cy,float a, float b ){
+        cout<<1;
+        emit GraphPlotSignal(cx,cy);
+        float aSq = a*a;
+        float bSq = b*b;
+        float diff;
+        int ixL,ixR;
+        ixR = cx;
+        ixL = cx;
+        do {
+            diff = sqrt(bSq*(1-((ixR-cx)*(ixR-cx))/aSq));
+            emit GraphPlotSignal( ixR, cy + diff);
+            emit GraphPlotSignal( ixR, cy - diff);
+            emit GraphPlotSignal( ixL, cy + diff);
+            emit GraphPlotSignal( ixL, cy - diff);
+            ixR++;
+            ixL--;
+        }
+        while (ixR <= (cx + a));
 
+        int iyD,iyU;
+        iyD = cy;
+        iyU = cy;
+        do {
+            diff = sqrt(aSq*(1-((iyU-cy)*(iyU-cy))/bSq));
+            emit GraphPlotSignal( cx + diff, iyU);
+            emit GraphPlotSignal( cx - diff, iyU);
+            emit GraphPlotSignal( cx + diff, iyD);
+            emit GraphPlotSignal( cx - diff, iyD);
+            iyU++;
+            iyD--;
+        }
+        while (iyU <= (cy + b));
     }
-    void ellipseDrawPolar(){
+    void ellipseDrawPolar(int cx,int cy,float a, float b){
+        emit GraphPlotSignal(cx,cy);
+        int ix = cx;
+        int iy = cy;
+        float delTheta = 1/sqrt(a*a+b*b);
+        float theta = 0;
+        do{
+            float cosTheta = a*cos(theta);
+            float sinTheta = b*sin(theta);
 
+            emit GraphPlotSignal(ix+cosTheta,iy+sinTheta);
+            emit GraphPlotSignal(ix+cosTheta,iy-sinTheta);
+            emit GraphPlotSignal(ix-cosTheta,iy+sinTheta);
+            emit GraphPlotSignal(ix-cosTheta,iy-sinTheta);
+            theta += delTheta;
+        }
+        while (theta<=1.571); // pi = 3.141 => pi/2 = 1.570795
     }
-    void ellipseDrawMidPoint(){
+    void ellipseDrawMidPoint(int xc, int yc, float rx, float ry){
+        float dx, dy, d1, d2, x, y;
+        x = 0;
+        y = ry;
 
+        d1 = (ry * ry) - (rx * rx * ry) + (0.25 * rx * rx);
+        dx = 2 * ry * ry * x;
+        dy = 2 * rx * rx * y;
+
+        while (dx < dy)
+        {
+            emit GraphPlotSignal(x + xc,y + yc);
+            emit GraphPlotSignal(-x + xc,y + yc);
+            emit GraphPlotSignal(x + xc,-y + yc);
+            emit GraphPlotSignal(-x + xc,-y + yc);
+            if (d1 < 0)
+            {
+                x++;
+                dx = dx + (2 * ry * ry);
+                d1 = d1 + dx + (ry * ry);
+            }
+            else
+            {
+                x++;
+                y--;
+                dx = dx + (2 * ry * ry);
+                dy = dy - (2 * rx * rx);
+                d1 = d1 + dx - dy + (ry * ry);
+            }
+        }
+
+        d2 = ((ry * ry) * ((x + 0.5) * (x + 0.5))) + ((rx * rx) * ((y - 1) * (y - 1))) - (rx * rx * ry * ry);
+
+        while (y >= 0)
+        {
+            emit GraphPlotSignal(x + xc,y + yc);
+            emit GraphPlotSignal(-x + xc,y + yc);
+            emit GraphPlotSignal(x + xc,-y + yc);
+            emit GraphPlotSignal(-x + xc,-y + yc);
+            if (d2 > 0)
+            {
+                y--;
+                dy = dy - (2 * rx * rx);
+                d2 = d2 + (rx * rx) - dy;
+            }
+            else
+            {
+                y--;
+                x++;
+                dx = dx + (2 * ry * ry);
+                dy = dy - (2 * rx * rx);
+                d2 = d2 + dx - dy + (rx * rx);
+            }
+        }
     }
 signals:
     void GraphResetSignal(int, int);
@@ -491,18 +625,24 @@ public slots:
         emit GraphResetSignal(pixelsize, no_of_pixels);
     }
     void drawLineHandler(){
+
+        float x0, y0, x1, y1;
+        x0 = (lineDrawStartX->text()).toInt();
+        y0 = -1 * (lineDrawStartY->text()).toInt();
+        x1 = (lineDrawEndX->text()).toInt();
+        y1 = -1 * (lineDrawEndY->text()).toInt();
         emit GraphPlotColorSignal(setBrushColor->currentIndex());
         QTime clock;
         clock.start();
         switch(lineDrawingAlgoComboBox->currentIndex()){
             case 0:
-                this->lineDrawDDA();
+                this->lineDrawDDA(x0,y0,x1,y1);
                 break;
             case 1:
-                this->lineDrawBresenham();
+                this->lineDrawBresenham(x0,y0,x1,y1);
                 break;
             case 2:
-                this->lineDrawParametric();
+                this->lineDrawParametric(x0,y0,x1,y1);
                 break;
         }
         timeTaken->setText("<b>Time Taken: </b>"+QString::number(clock.elapsed())+"ms");
@@ -526,6 +666,35 @@ public slots:
                 break;
             case 2:
                 this->circleDrawMidPoint(cx,cy,r);
+                break;
+            case 3:
+                this->circleBresenhamDrawMidPoint(cx,cy,r);
+                break;
+            case 4:
+                this->circleDrawPolygon(cx,cy,r);
+                break;
+        }
+        timeTaken->setText("<b>Time Taken: </b>"+QString::number(clock.elapsed())+"ms");
+    }
+    void drawEllipseHandler(){
+        emit GraphPlotColorSignal(setBrushColor->currentIndex());
+        int cx,cy;
+        float a,b;
+        cx = ellipseDrawCenterX->text().toInt();
+        cy = -1 * (ellipseDrawCenterX->text().toInt());
+        a = ellipseDrawMajor->text().toFloat()/2;
+        b = ellipseDrawMinor->text().toFloat()/2;
+        QTime clock;
+        clock.start();
+        switch(ellipseDrawingAlgoComboBox->currentIndex()){
+            case 0:
+                this->ellipseDrawCartesian(cx,cy,a,b);
+                break;
+            case 1:
+                this->ellipseDrawPolar(cx,cy,a,b);
+                break;
+            case 2:
+                this->ellipseDrawMidPoint(cx,cy,a,b);
                 break;
         }
         timeTaken->setText("<b>Time Taken: </b>"+QString::number(clock.elapsed())+"ms");
