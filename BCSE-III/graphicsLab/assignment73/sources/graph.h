@@ -114,7 +114,7 @@ public:
             QGraphicsItem *item = graphscene->itemAt(x * pixelsize, y * pixelsize, QTransform());
             if (item == NULL)
             {
-                cout << " item at pixel coordinates: (" << x << "," << y << ") not found" << endl;
+//                cout << " item at pixel coordinates: (" << x << "," << y << ") not found" << endl;
                 return;
             }
 

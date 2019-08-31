@@ -109,6 +109,10 @@ public:
 
         QTabWidget *allAssignments = new QTabWidget();
         QTabWidget * primitiveDrawing = new QTabWidget();
+        QTabWidget * fillDrawing = new QTabWidget();
+        QTabWidget * bazierDrawing = new QTabWidget();
+        QTabWidget * clipDrawing = new QTabWidget();
+        QTabWidget * transformDrawing = new QTabWidget();
 
         //Contents of Line drawing----------------------------------------------------------
         QGroupBox *lineDrawingGroup = new QGroupBox("Line Drawing Algorithms");
@@ -250,6 +254,10 @@ public:
         //Parent layout-----------------------------------------------------------------
         QVBoxLayout *layout = new QVBoxLayout();
         allAssignments->addTab(primitiveDrawing,"Primitive");
+        allAssignments->addTab(fillDrawing,"Filling");
+        allAssignments->addTab(bazierDrawing,"Bazier");
+        allAssignments->addTab(clipDrawing,"Cliping");
+        allAssignments->addTab(transformDrawing,"Transformation");
         layout->addWidget(setGraphGroup);
         layout->addWidget(allAssignments);
         this->setLayout(layout);
