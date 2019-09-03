@@ -591,3 +591,44 @@ void MainWindow::on_gridBgColor_textEdited(const QString &arg)
 {
     ui->graph->setStyleSheet("background-color: "+arg);
 }
+
+void MainWindow::on_fillingButton_clicked()
+{
+    int startX=0,startY=0;
+    int pointCount = (ui->fillingPointsCount->text()).toInt();
+    if(ui->graph->recent.size()==pointCount){
+        QString pixelColor= (ui->fillingColor->text());
+        int fillingMethod= (ui->fillingMethodAlgoBox->currentIndex());
+        for(int i=0;i<pointCount-1;i++){
+            drawLineBresenham(ui->graph->recent[i].first.toInt(),
+                              ui->graph->recent[i].second.toInt(),
+                              ui->graph->recent[i+1].first.toInt(),
+                              ui->graph->recent[i+1].second.toInt());
+            startX += ui->graph->recent[i].first.toInt();
+            startY += ui->graph->recent[i].second.toInt();
+        }
+        drawLineBresenham(ui->graph->recent[0].first.toInt(),
+                          ui->graph->recent[0].second.toInt(),
+                          ui->graph->recent[pointCount-1].first.toInt(),
+                          ui->graph->recent[pointCount-1].second.toInt());
+        startX += ui->graph->recent[pointCount-1].first.toInt();
+        startY += ui->graph->recent[pointCount-1].second.toInt();
+
+        startX /= pointCount;
+        startY /= pointCount;
+        switch(fillingMethod){
+
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+        }
+
+    }
+    else{
+        statusBar()->showMessage("Insufficient Points\n",2000);
+    }
+}
+

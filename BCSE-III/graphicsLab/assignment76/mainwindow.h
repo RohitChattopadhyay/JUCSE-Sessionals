@@ -55,6 +55,8 @@ private slots:
 
         void on_gridBgColor_textEdited(const QString &arg1);
 
+        void on_fillingButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QLabel *statusLabel;

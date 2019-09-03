@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[27];
-    char stringdata[532];
+    QByteArrayData data[28];
+    char stringdata[557];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -55,7 +55,8 @@ QT_MOC_LITERAL(22, 404, 16),
 QT_MOC_LITERAL(23, 421, 20),
 QT_MOC_LITERAL(24, 442, 28),
 QT_MOC_LITERAL(25, 471, 33),
-QT_MOC_LITERAL(26, 505, 25)
+QT_MOC_LITERAL(26, 505, 25),
+QT_MOC_LITERAL(27, 531, 24)
     },
     "MainWindow\0Mouse_current_pos\0\0"
     "Mouse_Pressed\0Mouse_left\0"
@@ -72,6 +73,7 @@ QT_MOC_LITERAL(26, 505, 25)
     "drawEllipseBresenham\0on_ellipseDrawButton_clicked\0"
     "on_brushColor_currentIndexChanged\0"
     "on_gridBgColor_textEdited\0"
+    "on_fillingButton_clicked\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -81,7 +83,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      23,   14, // methods
+      24,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -89,29 +91,30 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,  129,    2, 0x08,
-       3,    0,  130,    2, 0x08,
-       4,    0,  131,    2, 0x08,
-       5,    1,  132,    2, 0x08,
-       7,    1,  135,    2, 0x08,
-       9,    0,  138,    2, 0x08,
-      10,    4,  139,    2, 0x08,
-      11,    4,  148,    2, 0x08,
-      12,    4,  157,    2, 0x08,
-      13,    4,  166,    2, 0x08,
-      14,    4,  175,    2, 0x08,
-      15,    0,  184,    2, 0x08,
-      16,    3,  185,    2, 0x08,
-      17,    3,  192,    2, 0x08,
-      18,    3,  199,    2, 0x08,
-      19,    3,  206,    2, 0x08,
-      20,    0,  213,    2, 0x08,
-      21,    4,  214,    2, 0x08,
-      22,    4,  223,    2, 0x08,
-      23,    4,  232,    2, 0x08,
-      24,    0,  241,    2, 0x08,
-      25,    1,  242,    2, 0x08,
-      26,    1,  245,    2, 0x08,
+       1,    0,  134,    2, 0x08,
+       3,    0,  135,    2, 0x08,
+       4,    0,  136,    2, 0x08,
+       5,    1,  137,    2, 0x08,
+       7,    1,  140,    2, 0x08,
+       9,    0,  143,    2, 0x08,
+      10,    4,  144,    2, 0x08,
+      11,    4,  153,    2, 0x08,
+      12,    4,  162,    2, 0x08,
+      13,    4,  171,    2, 0x08,
+      14,    4,  180,    2, 0x08,
+      15,    0,  189,    2, 0x08,
+      16,    3,  190,    2, 0x08,
+      17,    3,  197,    2, 0x08,
+      18,    3,  204,    2, 0x08,
+      19,    3,  211,    2, 0x08,
+      20,    0,  218,    2, 0x08,
+      21,    4,  219,    2, 0x08,
+      22,    4,  228,    2, 0x08,
+      23,    4,  237,    2, 0x08,
+      24,    0,  246,    2, 0x08,
+      25,    1,  247,    2, 0x08,
+      26,    1,  250,    2, 0x08,
+      27,    0,  253,    2, 0x08,
 
  // slots: parameters
     QMetaType::Void,
@@ -137,6 +140,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,    6,
     QMetaType::Void, QMetaType::QString,    8,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -169,6 +173,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 20: _t->on_ellipseDrawButton_clicked(); break;
         case 21: _t->on_brushColor_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 22: _t->on_gridBgColor_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 23: _t->on_fillingButton_clicked(); break;
         default: ;
         }
     }
@@ -199,13 +204,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 23)
+        if (_id < 24)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 23;
+        _id -= 24;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 23)
+        if (_id < 24)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 23;
+        _id -= 24;
     }
     return _id;
 }

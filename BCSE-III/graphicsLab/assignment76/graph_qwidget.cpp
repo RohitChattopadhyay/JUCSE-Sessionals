@@ -7,6 +7,14 @@ graph_qWidget::graph_qWidget(QWidget *parent) : QWidget(parent)
     ker = 3;
     brushColorIdx = 0;
 }
+bool linearSearch(int x,int y,QSet<QPair<QPair<int,int> , int > > points){
+    QSet<QPair<QPair<int,int>, int> >::iterator it;
+    for(it=points.begin();it!=points.end();it++){
+        if(it->first.first == x && it->first.second == y)
+            return true;
+    }
+    return false;
+}
 
 void graph_qWidget::mouseMoveEvent(QMouseEvent *ev){
     this->x = ev->x();

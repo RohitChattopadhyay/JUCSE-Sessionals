@@ -119,6 +119,14 @@ public:
     QHBoxLayout *horizontalLayout_4;
     QLineEdit *ellipseMajorAxisLen;
     QLineEdit *ellipseMinorAxisLen;
+    QWidget *tab_2;
+    QPushButton *fillingButton;
+    QWidget *widget;
+    QFormLayout *formLayout_4;
+    QLabel *label_19;
+    QComboBox *fillingMethodAlgoBox;
+    QLineEdit *fillingPointsCount;
+    QLineEdit *fillingColor;
     QMenuBar *menuBar;
     QMenu *menuRaster;
     QToolBar *mainToolBar;
@@ -535,6 +543,37 @@ public:
         gridLayout_2->addWidget(controlPanel, 0, 0, 1, 1);
 
         tabWidget->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QStringLiteral("tab_2"));
+        fillingButton = new QPushButton(tab_2);
+        fillingButton->setObjectName(QStringLiteral("fillingButton"));
+        fillingButton->setGeometry(QRect(8, 100, 301, 23));
+        widget = new QWidget(tab_2);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(10, 56, 291, 31));
+        formLayout_4 = new QFormLayout(widget);
+        formLayout_4->setSpacing(6);
+        formLayout_4->setContentsMargins(11, 11, 11, 11);
+        formLayout_4->setObjectName(QStringLiteral("formLayout_4"));
+        formLayout_4->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+        formLayout_4->setContentsMargins(0, 0, 0, 0);
+        label_19 = new QLabel(widget);
+        label_19->setObjectName(QStringLiteral("label_19"));
+
+        formLayout_4->setWidget(0, QFormLayout::LabelRole, label_19);
+
+        fillingMethodAlgoBox = new QComboBox(widget);
+        fillingMethodAlgoBox->setObjectName(QStringLiteral("fillingMethodAlgoBox"));
+
+        formLayout_4->setWidget(0, QFormLayout::FieldRole, fillingMethodAlgoBox);
+
+        fillingPointsCount = new QLineEdit(tab_2);
+        fillingPointsCount->setObjectName(QStringLiteral("fillingPointsCount"));
+        fillingPointsCount->setGeometry(QRect(10, 4, 291, 20));
+        fillingColor = new QLineEdit(tab_2);
+        fillingColor->setObjectName(QStringLiteral("fillingColor"));
+        fillingColor->setGeometry(QRect(10, 30, 291, 20));
+        tabWidget->addTab(tab_2, QString());
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -563,8 +602,8 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
-        controlPanel->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(1);
+        controlPanel->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -652,6 +691,17 @@ public:
         ellipseMinorAxisLen->setPlaceholderText(QApplication::translate("MainWindow", "Minor = 2b", 0));
         controlPanel->setTabText(controlPanel->indexOf(ellipseDrawTab), QApplication::translate("MainWindow", "Ellipse", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Primitive", 0));
+        fillingButton->setText(QApplication::translate("MainWindow", "Fill Color", 0));
+        label_19->setText(QApplication::translate("MainWindow", "Method", 0));
+        fillingMethodAlgoBox->clear();
+        fillingMethodAlgoBox->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "ScanLine", 0)
+         << QApplication::translate("MainWindow", "FloodFill", 0)
+         << QApplication::translate("MainWindow", "BoundaryFill", 0)
+        );
+        fillingPointsCount->setPlaceholderText(QApplication::translate("MainWindow", "Number of Points", 0));
+        fillingColor->setPlaceholderText(QApplication::translate("MainWindow", "Enter Color", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Filling", 0));
         menuRaster->setTitle(QApplication::translate("MainWindow", "Raster", 0));
     } // retranslateUi
 

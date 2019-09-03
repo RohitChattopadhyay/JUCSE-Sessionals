@@ -24,6 +24,7 @@ public:
     int ker;
     int x,y;
     int brushColorIdx;
+    bool linearSearch(int x,int y,QSet<QPair<QPair<int,int> , int > > points);
 
 signals:
     void Mouse_Pressed();
