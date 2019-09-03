@@ -206,7 +206,7 @@ public:
         ellipseDrawingAlgoComboBox = new QComboBox();
         ellipseDrawingAlgoComboBox->addItem("Cartesian form");
         ellipseDrawingAlgoComboBox->addItem("Polar form");
-        ellipseDrawingAlgoComboBox->addItem("Bresenham Mid Point form");
+        ellipseDrawingAlgoComboBox->addItem("Mid Point form");
         ellipseDrawingLayout->addWidget(ellipseDrawingAlgoComboBox);
 
         ellipseDrawCenterX =  new QLineEdit();

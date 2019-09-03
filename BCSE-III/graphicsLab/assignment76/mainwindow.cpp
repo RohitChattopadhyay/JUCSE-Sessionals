@@ -301,7 +301,44 @@ void MainWindow::drawCirclePolar(int cx, int cy, float r){
     while (theta<=1.571); // pi = 3.141 => pi/2 = 1.570795
 }
 // Bresenham Mid Point
-void MainWindow::drawCircleBresenham(int cx, int cy, float r){
+void MainWindow::drawCircleBresenhamMidPoint(int xc, int yc, float r){
+    insertPoint(xc,yc); //center
+    int x = 0, y = r;
+    int d = 3 - 2 * r;
+    // eight way symmetry
+    insertPoint(xc+x, yc+y);
+    insertPoint(xc-x, yc+y);
+    insertPoint(xc+x, yc-y);
+    insertPoint(xc-x, yc-y);
+    insertPoint(xc+y, yc+x);
+    insertPoint(xc-y, yc+x);
+    insertPoint(xc+y, yc-x);
+    insertPoint(xc-y, yc-x);
+    ui->graph->repaint();
+    while (y >= x)
+    {
+        x++;
+
+        if (d > 0)
+        {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        }
+        else
+            d = d + 4 * x + 6;
+        insertPoint(xc+x, yc+y);
+        insertPoint(xc-x, yc+y);
+        insertPoint(xc+x, yc-y);
+        insertPoint(xc-x, yc-y);
+        insertPoint(xc+y, yc+x);
+        insertPoint(xc-y, yc+x);
+        insertPoint(xc+y, yc-x);
+        insertPoint(xc-y, yc-x);
+        ui->graph->repaint();
+    }
+}
+
+void MainWindow::drawCircleMidPoint(int cx, int cy, float r){
     int x = r, y = 0;
     insertPoint(cx,cy);
     insertPoint(x + cx,y + cy);
@@ -384,7 +421,10 @@ void MainWindow::on_circleDrawButton_clicked()
             drawCirclePolar(cx,cy,r);
             break;
         case 2:
-            drawCircleBresenham(cx,cy,r);
+            drawCircleMidPoint(cx,cy,r);
+            break;
+        case 3:
+            drawCircleBresenhamMidPoint(cx,cy,r);
             break;
     }
     statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);

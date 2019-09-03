@@ -41,7 +41,8 @@ private slots:
         // Circle Drawing Algorithm
         void drawCircleCartesian(int,int,float);
         void drawCirclePolar(int,int,float);
-        void drawCircleBresenham(int,int,float);
+        void drawCircleMidPoint(int,int,float);
+        void drawCircleBresenhamMidPoint(int,int,float);
         void on_circleDrawButton_clicked();
 
         // Ellipse Drawing Algorithm
