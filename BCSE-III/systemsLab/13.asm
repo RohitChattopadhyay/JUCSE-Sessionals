@@ -38,24 +38,23 @@ c_loop:
     shr dx,1                ; Right shift
     shr dx,1                ; Right shift
     
-    and ax,0fh
+    and ax,0fh              ; AND to get right 4bits
     
-    mov bx, offset hex_out
+    mov bx, offset hex_out  ; Make string
     add bx,cx
     
-    cmp ax,0ah
-    jl set_digit
-    add al,27h
+    cmp ax,0ah              ; carry check
+    jl set_digit            ; Jump if less
+    add al,27h              ; Add 27h
 
 set_digit:
-    add al,30h
-    mov [bx],al
+    add al,30h              ; Add 30h
+    mov [bx],al             ; [BX] = AL    
+    cmp cx,0                ; Compare with 0
+    jne c_loop              ; Jump if not equal
     
-    cmp cx,0
-    jne c_loop
-    
-    lea dx,hex_out
-    mov ah,9
+    lea dx,hex_out          ; Set address to result msg
+    mov ah,9                ; print result
     int 21h
     
     ret
