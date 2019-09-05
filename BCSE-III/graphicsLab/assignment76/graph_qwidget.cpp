@@ -7,13 +7,13 @@ graph_qWidget::graph_qWidget(QWidget *parent) : QWidget(parent)
     ker = 3;
     brushColorIdx = 0;
 }
-bool linearSearch(int x,int y,QSet<QPair<QPair<int,int> , int > > points){
-    QSet<QPair<QPair<int,int>, int> >::iterator it;
-    for(it=points.begin();it!=points.end();it++){
-        if(it->first.first == x && it->first.second == y)
-            return true;
+int graph_qWidget::linearSearch(int x,int y){
+    for(int i=points.size()-1;i>-1;i--){
+        QPair<QPair<int,int>, int>  it = points[i];
+        if(it.first.first == x && it.first.second == y)
+            return it.second;
     }
-    return false;
+    return -1;
 }
 
 void graph_qWidget::mouseMoveEvent(QMouseEvent *ev){
@@ -62,7 +62,7 @@ void graph_qWidget::paintEvent(QPaintEvent *pe) {
 
     painter.setPen(QPen(Qt::white, ker, Qt::SolidLine));
     painter.drawPoint(half-ker/2,half-ker/2);
-    QSet<QPair<QPair<int,int>, int> >::iterator it;
+    QVector<QPair<QPair<int,int>, int> >::iterator it;
     QColor brushColor;
     for(it =  points.begin(); it != points.end() ; ++it){
         switch (it->second) {

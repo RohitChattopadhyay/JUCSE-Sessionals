@@ -55,7 +55,11 @@ private slots:
 
         void on_gridBgColor_textEdited(const QString &arg1);
 
+        //Filling
         void on_fillingButton_clicked();
+        void fillingScanLine(int, int, int, int, bool, int, int);
+        void boundaryFill(int, int, bool, int, int);
+        void floodFill(int, int, bool, int, int);
 
 private:
     Ui::MainWindow *ui;

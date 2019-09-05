@@ -138,7 +138,7 @@
       <x>510</x>
       <y>20</y>
       <width>321</width>
-      <height>157</height>
+      <height>166</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -270,7 +270,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QTabWidget" name="algoTab">
     <property name="geometry">
      <rect>
       <x>510</x>
@@ -779,8 +779,8 @@
       <property name="geometry">
        <rect>
         <x>8</x>
-        <y>100</y>
-        <width>301</width>
+        <y>150</y>
+        <width>291</width>
         <height>23</height>
        </rect>
       </property>
@@ -788,27 +788,27 @@
        <string>Fill Color</string>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>56</y>
+        <y>10</y>
         <width>291</width>
-        <height>31</height>
+        <height>127</height>
        </rect>
       </property>
       <layout class="QFormLayout" name="formLayout_4">
        <property name="fieldGrowthPolicy">
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
-       <item row="0" column="0">
+       <item row="3" column="0">
         <widget class="QLabel" name="label_19">
          <property name="text">
           <string>Method</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="3" column="1">
         <widget class="QComboBox" name="fillingMethodAlgoBox">
          <item>
           <property name="text">
@@ -825,35 +825,81 @@
            <string>BoundaryFill</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>New Item</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_20">
+         <property name="text">
+          <string>Number of &lt;br/&gt;Points</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="fillingPointsCount">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="placeholderText">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_21">
+         <property name="text">
+          <string>Fill Color</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="fillingColorComboBox">
+         <item>
+          <property name="text">
+           <string>Yellow</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Red</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Black</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Blue</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>White</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_22">
+         <property name="text">
+          <string>Animated</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="fillingAnimation">
+         <property name="text">
+          <string>(Might Crash)</string>
+         </property>
         </widget>
        </item>
       </layout>
-     </widget>
-     <widget class="QLineEdit" name="fillingPointsCount">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>4</y>
-        <width>291</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="placeholderText">
-       <string>Number of Points</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="fillingColor">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>291</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="placeholderText">
-       <string>Enter Color</string>
-      </property>
      </widget>
     </widget>
    </widget>
@@ -864,7 +910,7 @@
      <x>0</x>
      <y>0</y>
      <width>850</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuRaster">

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "graph_qwidget.h"
-#define insertPoint(x,y) ui->graph->points.insert(QPair<QPair<int , int>,int >(QPair< int , int >(x,y),ui->graph->brushColorIdx))
+#define insertPoint(x,y) ui->graph->points.push_back(QPair<QPair<int , int>,int >(QPair< int , int >(x,y),ui->graph->brushColorIdx))
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -42,7 +42,8 @@ void MainWindow::Mouse_Pressed()
     ui->graph->recent.push_front(QPair< QString , QString >(QString::number(xCord),QString::number(yCord)));
     statusBar()->showMessage("Plotted: " + QString::number(xCord) + "," + QString::number(yCord),2000);
     ui->graph->repaint();
-
+    if(ui->algoTab->currentIndex()==1)
+        ui->fillingPointsCount->setText(QString::number(ui->fillingPointsCount->text().toInt()+1));
 }
 
 void MainWindow::Mouse_left()
@@ -70,6 +71,9 @@ void MainWindow::on_clearButton_clicked()
     ui->graph->points.clear();
     ui->graph->recent.clear();
     ui->graph->repaint();
+    foreach(QLineEdit* le, findChildren<QLineEdit*>())
+       le->clear();
+    ui->gridBgColor->setText("#173C1B");
 }
 
 // Line Drawing Algorithms
@@ -592,41 +596,147 @@ void MainWindow::on_gridBgColor_textEdited(const QString &arg)
     ui->graph->setStyleSheet("background-color: "+arg);
 }
 
+
+// Filling Algorithm
+// Scanline
+void MainWindow::fillingScanLine(int xMin,int xMax,int yMin, int yMax,bool animate, int pixel,int boundary){
+    xMin-=5;
+    yMin-=5;
+    xMax+=5;
+    yMax+=5;
+    ui->graph->brushColorIdx = pixel;
+    for(int y = yMin; y<=yMax; y++){
+        bool start = false;
+        int x1 = xMin;
+        QVector< QPair< int, int > > pointPair;
+        for(int x=xMin; x <=xMax; x++){
+            if(ui->graph->linearSearch(x,y)==boundary){
+                if(!start){
+                    pointPair.push_back(QPair<int, int> (x1+1,x-1));
+                    x1 = x;
+                    start = true;
+                }
+            }
+            else {
+                start = false;
+            }
+        }
+        for(int i = 1; i < pointPair.size() ; i += 2){
+            for(int s = pointPair[i].first ; s<=pointPair[i].second ; s++){
+                insertPoint(s,y);
+            }
+        }
+        pointPair.clear();
+        if(animate) ui->graph->repaint();
+    }
+    ui->graph->brushColorIdx = boundary;
+    return;
+}
+// Boundary fill
+void MainWindow::boundaryFill(int x,int y,bool animate, int pixel,int boundary){
+    int current = ui->graph->linearSearch(x,y);
+    if(current != boundary && current != pixel){
+        insertPoint(x,y);
+        boundaryFill(x,y+1,animate, pixel,boundary);
+        boundaryFill(x+1,y,animate,pixel,boundary);
+        boundaryFill(x-1,y,animate,pixel,boundary);
+        boundaryFill(x,y-1,animate,pixel,boundary);
+        if(animate) ui->graph->repaint();
+    }
+    return;
+}
+void MainWindow::floodFill(int x,int y,bool animate, int pixel,int old){
+    int current = ui->graph->linearSearch(x,y);
+    if(current == old){
+        insertPoint(x,y);
+        floodFill(x,y+1,animate, pixel,old);
+        floodFill(x+1,y,animate,pixel,old);
+        floodFill(x-1,y,animate,pixel,old);
+        floodFill(x,y-1,animate,pixel,old);
+        if(animate) ui->graph->repaint();
+    }
+    return;
+}
+
 void MainWindow::on_fillingButton_clicked()
 {
     int startX=0,startY=0;
     int pointCount = (ui->fillingPointsCount->text()).toInt();
-    if(ui->graph->recent.size()==pointCount){
-        QString pixelColor= (ui->fillingColor->text());
-        int fillingMethod= (ui->fillingMethodAlgoBox->currentIndex());
-        for(int i=0;i<pointCount-1;i++){
-            drawLineBresenham(ui->graph->recent[i].first.toInt(),
-                              ui->graph->recent[i].second.toInt(),
-                              ui->graph->recent[i+1].first.toInt(),
-                              ui->graph->recent[i+1].second.toInt());
-            startX += ui->graph->recent[i].first.toInt();
-            startY += ui->graph->recent[i].second.toInt();
-        }
-        drawLineBresenham(ui->graph->recent[0].first.toInt(),
-                          ui->graph->recent[0].second.toInt(),
-                          ui->graph->recent[pointCount-1].first.toInt(),
-                          ui->graph->recent[pointCount-1].second.toInt());
-        startX += ui->graph->recent[pointCount-1].first.toInt();
-        startY += ui->graph->recent[pointCount-1].second.toInt();
+    int fillingMethod= (ui->fillingMethodAlgoBox->currentIndex());
+    if((ui->graph->recent.size()>=pointCount || fillingMethod==1 ) && pointCount>0){
+        int xMin,yMin,xMax,yMax,xTemp,yTemp;
+        xMin = INT_MAX;
+        yMin = INT_MAX;
+        xMax = INT_MIN;
+        yMax = INT_MIN;
+        if(fillingMethod != 1){
+            for(int i=0;i<pointCount-1;i++){
+                drawLineBresenham(ui->graph->recent[i].first.toInt(),
+                                  ui->graph->recent[i].second.toInt(),
+                                  ui->graph->recent[i+1].first.toInt(),
+                                  ui->graph->recent[i+1].second.toInt());
+                xTemp = ui->graph->recent[i].first.toInt();
+                yTemp = ui->graph->recent[i].second.toInt();
+                startX += xTemp;
+                startY += yTemp;
+                if( xTemp<=xMin )
+                    xMin = xTemp;
+                if( yTemp<=yMin )
+                    yMin = yTemp;
+                if( xTemp>=xMax )
+                    xMax = xTemp;
+                if( yTemp>=yMax )
+                    yMax = yTemp;
+            }
+            drawLineBresenham(ui->graph->recent[0].first.toInt(),
+                              ui->graph->recent[0].second.toInt(),
+                              ui->graph->recent[pointCount-1].first.toInt(),
+                              ui->graph->recent[pointCount-1].second.toInt());
 
-        startX /= pointCount;
-        startY /= pointCount;
+            xTemp = ui->graph->recent[pointCount-1].first.toInt();
+            yTemp = ui->graph->recent[pointCount-1].second.toInt();
+            startX += xTemp;
+            startY += yTemp;
+            if( xTemp<=xMin )
+                xMin = xTemp;
+            if( yTemp<=yMin )
+                yMin = yTemp;
+            if( xTemp>=xMax )
+                xMax = xTemp;
+            if( yTemp>=yMax )
+                yMax = yTemp;
+
+            for(int i = 0; i<pointCount;i++)
+                ui->graph->recent.pop_front();
+
+            startX /= pointCount;
+            startY /= pointCount;
+        }
+        int pixelColor = ui->fillingColorComboBox->currentIndex();
+        int boundaryColor = ui->brushColor->currentIndex();
+        bool animation = ui->fillingAnimation->isChecked();
+        ui->graph->brushColorIdx = pixelColor;
+        QTime timer;
+        timer.start();
         switch(fillingMethod){
-
             case 0:
+                fillingScanLine(xMin,xMax,yMin,yMax,animation,pixelColor,boundaryColor);
                 break;
-            case 1:
+            case 1:{
+                int tempX = ui->graph->recent[0].first.toInt();
+                int tempY = ui->graph->recent[0].second.toInt();
+                floodFill(tempX,tempY,animation,pixelColor,ui->graph->linearSearch(tempX,tempY));
                 break;
+            }
             case 2:
-
+                boundaryFill(startX,startY,animation,pixelColor,boundaryColor);
                 break;
         }
 
+        if(!animation) ui->graph->repaint();
+        ui->graph->brushColorIdx = boundaryColor;
+        ui->fillingPointsCount->setText("0");
+        statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);
     }
     else{
         statusBar()->showMessage("Insufficient Points\n",2000);

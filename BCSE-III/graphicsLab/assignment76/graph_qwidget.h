@@ -19,12 +19,12 @@ public:
     void mousePressEvent(QMouseEvent *ev);
     void leaveEvent(QEvent *);
     void paintEvent(QPaintEvent *);
-    QSet<QPair<QPair<int,int> , int > > points = {};
+    QVector<QPair<QPair<int,int> , int > > points = {};
     QVector<QPair<QString,QString> > recent = {};
     int ker;
     int x,y;
     int brushColorIdx;
-    bool linearSearch(int x,int y,QSet<QPair<QPair<int,int> , int > > points);
+    int linearSearch(int x,int y);
 
 signals:
     void Mouse_Pressed();
