@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<string.h>
-#include <stdlib.h>
+#include<stdlib.h>
 
 void removeSubstr (char *string, char *sub) {
     char *match;

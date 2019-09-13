@@ -1,13 +1,13 @@
 .MODEL SMALL
 .STACK 300H
 .DATA
-ARRAY1 DB 11,22,33,44,55
+ARRAY1 DB 5 DUP(?)
 MSG4 DB 0AH,0DH,'Enter size of the array: $'
 MSG1 DB 0AH,0DH,'Enter number to be searched: $'
 MSG2 DB 0AH,0DH,'FOUND AT POSITION $ '
 MSG3 DB 0AH,0DH,'NOT FOUND$'
 ENDL DB 0AH,0DH,'$'
-
+KEY DB '$'
 SE DB 33H
 COUNT DB 00H
 
@@ -19,7 +19,6 @@ PRINT MACRO MSG
 	mov AH, 09H
 	lea DX, MSG
 	int 21H
-	;int 3
 	pop dx
 	pop ax
 ENDM
@@ -43,35 +42,51 @@ START:
 	loop rdnxt
 	
 	mov cl, COUNT
-	PRINT MSG1
-	call readnum
-	mov se,al
-	mov al,se
-	mov ah,00h
-	;call writenum
-	;PRINT ENDL
-	;mov al,se
-	;mov ah,00h
-	;call writenum
+
 	LEA SI, ARRAY1
-	;mov bx, 05h
-	;call PRINT_ARRAY
-	;MOV CX, 04H
-	mov bh, 00h
+	MOV BH,0
+	MOV BL,COUNT
+	CALL PRINT_ARRAY
+
+	PRINT MSG1
+	call readnum	
+	mov bh,al
+	mov dl,00h
+	mov dh,COUNT
+	mov ch,0
+	mov cl,COUNT
+	dec dh
 UP:
+	CMP dl,dh
+	JG NF
+	mov al, dl
+	add al, dh
+	mov bl, 2
+	mov ah, 0
+	div bl
+	mov ah, 0
+	ADD SI,AX
 	MOV BL,[SI]
-	CMP AL, BL
+	mov ah,02h
+	mov dl,AL
+	INT 21h
+	CMP bh, BL
 	JZ FO
-	INC SI
-	inc bh
+	JG LEFT
+	JL RIGHT
 	loop UP
-	PRINT MSG3
+NF:	PRINT MSG3
 	JMP END1
- 
+RIGHT:
+	inc al
+	mov dl,al
+	JMP UP
+LEFT:
+	dec al
+	mov dh,al
+	JMP UP
 FO:
-	
 	PRINT MSG2
-	mov al, bh
 	call writenum
  
 END1:

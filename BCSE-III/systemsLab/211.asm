@@ -30,7 +30,6 @@ start:
 	lea dx,msg3
 	int 21h
 	call show_numbers
-;###########################################################
 	mov ah,9
 	lea dx,msg2
 	int 21h

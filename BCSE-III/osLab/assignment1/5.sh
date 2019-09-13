@@ -15,8 +15,7 @@ if [ -e "$filePath" ]; then
                 printf "Total Number of occurrences: %s\n" $occurenceCount
                 printf "Line No\t|\tFrequency\n"
                 echo "--------------------------"
-                grep  -ion "$searchKey" "$filePath" | cut -d : -f 1 | uniq -c | awk
-'{print $2,"\t|\t",$1}'
+                grep  -ion "$searchKey" "$filePath" | cut -d : -f 1 | uniq -c | awk '{print $2,"\t|\t",$1}'
         else
                 echo "String not found in file"
         fi
