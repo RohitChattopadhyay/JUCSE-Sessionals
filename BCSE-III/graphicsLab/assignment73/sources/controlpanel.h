@@ -31,6 +31,7 @@ class ControlPanel : public QWidget
     QPushButton *setGraphButton;
     QComboBox *setBrushColor;
     QStack<pair<int, int> > pointHistory;
+    QTabWidget * allAssignments;
 
     //members of drawing------------------------------------
     QComboBox *lineDrawingAlgoComboBox;
@@ -55,6 +56,11 @@ class ControlPanel : public QWidget
     QLineEdit *ellipseDrawCenterY;
     QLineEdit *ellipseDrawMajor;
     QLineEdit *ellipseDrawMinor;
+
+    //members of filling
+    QLineEdit *fillingCount;
+    QComboBox *fillingAlgoComboBox;
+    QComboBox *fillingColorComboBox;
 
 public:
     ControlPanel()
@@ -107,7 +113,7 @@ public:
         setGraphLayout->addWidget(mouseInfoWidget);
         setGraphGroup->setLayout(setGraphLayout);
 
-        QTabWidget *allAssignments = new QTabWidget();
+        allAssignments = new QTabWidget();
         QTabWidget * primitiveDrawing = new QTabWidget();
         QTabWidget * fillDrawing = new QTabWidget();
         QTabWidget * bazierDrawing = new QTabWidget();
@@ -251,12 +257,38 @@ public:
         primitiveDrawing->addTab(circleDrawing,"Circle");
         primitiveDrawing->addTab(ellipseDrawing,"Ellipse");
 
+        //Filling
+        QVBoxLayout *layoutFilling = new QVBoxLayout();
+        fillingColorComboBox = new QComboBox();
+        // Maintain order with Brush color
+        fillingColorComboBox->addItem("Yellow");
+        fillingColorComboBox->addItem("Green");
+        fillingColorComboBox->addItem("Red");
+
+        fillingAlgoComboBox = new QComboBox();
+        fillingAlgoComboBox->addItem("Scanline");
+        fillingAlgoComboBox->addItem("Boundary Fill");
+        fillingAlgoComboBox->addItem("Floodfill");
+        fillingCount =  new QLineEdit();
+        fillingCount->setPlaceholderText("Number of vertex");
+        QPushButton *fillingButton = new QPushButton("Fill Color");
+        QObject::connect(fillingButton, SIGNAL(clicked()), this, SLOT(fillingHandler()));
+
+        layoutFilling->addWidget(new QLabel("<b>Filling Algorithm</b>"));
+        layoutFilling->addWidget(fillingAlgoComboBox);
+        layoutFilling->addWidget(fillingCount);
+        layoutFilling->addWidget(new QLabel("Fill Color"));
+        layoutFilling->addWidget(fillingColorComboBox);
+        layoutFilling->addWidget(fillingButton);
+        layoutFilling->addWidget(new QLabel(""));
+        fillDrawing->setLayout(layoutFilling);
+
         //Parent layout-----------------------------------------------------------------
         QVBoxLayout *layout = new QVBoxLayout();
         allAssignments->addTab(primitiveDrawing,"Primitive");
         allAssignments->addTab(fillDrawing,"Filling");
         allAssignments->addTab(bazierDrawing,"Bazier");
-        allAssignments->addTab(clipDrawing,"Cliping");
+        allAssignments->addTab(clipDrawing,"Clipping");
         allAssignments->addTab(transformDrawing,"Transformation");
         layout->addWidget(setGraphGroup);
         layout->addWidget(allAssignments);
@@ -623,10 +655,32 @@ public:
             }
         }
     }
+        // Filling
+        void fillingBoundaryFill(int x,int y,int pixel,int boundary){
+            int current = emit GraphCheckPixelColor(x,y);
+            if(current != boundary && current != pixel){
+                emit GraphPlotSignal(x,y);
+                fillingBoundaryFill(x,y+1, pixel,boundary);
+                fillingBoundaryFill(x+1,y,pixel,boundary);
+                fillingBoundaryFill(x-1,y,pixel,boundary);
+                fillingBoundaryFill(x,y-1,pixel,boundary);
+            }
+        }
+        void fillingFloodFill(int x,int y,int pixel,int old){
+            int current = emit GraphCheckPixelColor(x,y);
+            if(current == old){
+                emit GraphPlotSignal(x,y);
+                fillingFloodFill(x,y+1, pixel,old);
+                fillingFloodFill(x+1,y,pixel,old);
+                fillingFloodFill(x-1,y,pixel,old);
+                fillingFloodFill(x,y-1,pixel,old);
+            }
+        }
 signals:
     void GraphResetSignal(int, int);
     void GraphPlotSignal(int,int);
     void GraphPlotColorSignal(int);
+    bool GraphCheckPixelColor(int, int);
 
 public slots:
     void handleButton()
@@ -645,10 +699,10 @@ public slots:
           ){
             if( pointHistory.size() >= 2 ){
                 lineDrawStartX->setText(QString::number(pointHistory.top().first));
-                lineDrawStartY->setText(QString::number(pointHistory.top().second));
+                lineDrawStartY->setText(QString::number(-1*pointHistory.top().second));
                 pointHistory.pop();
                 lineDrawEndX->setText(QString::number(pointHistory.top().first));
-                lineDrawEndY->setText(QString::number(pointHistory.top().second));
+                lineDrawEndY->setText(QString::number(-1*pointHistory.top().second));
                 pointHistory.pop();
             }
             else
@@ -756,7 +810,85 @@ public slots:
         }
         timeTaken->setText("<b>Time Taken: </b>"+QString::number(clock.elapsed())+"ms");
     }
+    void fillingHandler(){
+        int startX=0,startY=0;
+        int pointCount = fillingCount->text().toInt();
+        int boundaryColor = setBrushColor->currentIndex();
+        int pixelColor = fillingColorComboBox->currentIndex();
+        int fillingMethod = fillingAlgoComboBox->currentIndex();
+        emit GraphPlotColorSignal(boundaryColor);
+        if((pointHistory.size()>=pointCount || fillingMethod==2 ) && pointCount>0){
+            int xMin,yMin,xMax,yMax,xTemp,yTemp;
+            xMin = INT_MAX;
+            yMin = INT_MAX;
+            xMax = INT_MIN;
+            yMax = INT_MIN;
+            if(fillingMethod != 2){
+                for(int i=0;i<pointCount-1;i++){
+                    this->lineDrawBresenham(pointHistory[i].first,
+                                      pointHistory[i].second,
+                                      pointHistory[i+1].first,
+                                      pointHistory[i+1].second);
+                    xTemp = pointHistory[i].first;
+                    yTemp = pointHistory[i].second;
+                    startX += xTemp;
+                    startY += yTemp;
+                    if( xTemp<=xMin )
+                        xMin = xTemp;
+                    if( yTemp<=yMin )
+                        yMin = yTemp;
+                    if( xTemp>=xMax )
+                        xMax = xTemp;
+                    if( yTemp>=yMax )
+                        yMax = yTemp;
+                }
+                this->lineDrawBresenham(pointHistory[0].first,
+                                  pointHistory[0].second,
+                                  pointHistory[pointCount-1].first,
+                                  pointHistory[pointCount-1].second);
 
+                xTemp = pointHistory[pointCount-1].first;
+                yTemp = pointHistory[pointCount-1].second;
+                startX += xTemp;
+                startY += yTemp;
+                if( xTemp<=xMin )
+                    xMin = xTemp;
+                if( yTemp<=yMin )
+                    yMin = yTemp;
+                if( xTemp>=xMax )
+                    xMax = xTemp;
+                if( yTemp>=yMax )
+                    yMax = yTemp;
+
+                for(int i = 0; i<pointCount;i++)
+                    pointHistory.pop();
+
+                startX /= pointCount;
+                startY /= pointCount;
+            }
+        }
+        emit GraphPlotColorSignal(pixelColor);
+        QTime clock;
+        clock.start();
+        switch(fillingMethod){
+            case 0:
+//                this->fillingScanline(cx,cy,a,b);
+                break;
+            case 1:
+                this->fillingBoundaryFill(startX,startY,pixelColor,boundaryColor);
+                break;
+            case 2:
+                if(pointHistory.size()==0)
+                    return;
+                int tempX = pointHistory.top().first;
+                int tempY = pointHistory.top().second;
+                pointHistory.pop();
+                this->fillingFloodFill(tempX,tempY,pixelColor,emit GraphCheckPixelColor(tempX,tempY));
+                break;
+        }
+        timeTaken->setText("<b>Time Taken: </b>"+QString::number(clock.elapsed())+"ms");
+        emit GraphPlotColorSignal(boundaryColor);
+    }
     void getPointHover(pair<int, int> point)
     {
         QString QShowPoint = "<b>Mouse at:</b> " + QString::number(point.first) + " " + QString::number(-1*point.second);
@@ -766,9 +898,18 @@ public slots:
     void getPointSelect(pair<int, int> point)
     {
         emit GraphPlotColorSignal(setBrushColor->currentIndex());
-        point.second *= -1;
         QString QShowPoint = "<b>Clicked on :</b> " + QString::number(point.first) + " " + QString::number(point.second);
         clickCoordinate->setText(QShowPoint);
         pointHistory.push(point);
+        if( allAssignments->currentIndex()==1)
+            fillingCount->setText(QString::number(fillingCount->text().toInt()+1));
+    }
+    void ResetUI()
+    {
+        pointHistory.clear();
+        foreach(QLineEdit* le, findChildren<QLineEdit*>())
+           le->clear();
+        pixelsizeSpinBox->setValue(5);
+        noOfPixelsSpinBox->setValue(100);
     }
 };

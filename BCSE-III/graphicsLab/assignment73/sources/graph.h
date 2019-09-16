@@ -101,7 +101,19 @@ public:
         no_of_pixels = n;
         GenerateGraph();
     }
-
+    QColor getBrushColor(int c){
+        switch(c){
+            case 0:
+                return Qt::yellow;
+                break;
+            case 1:
+                return Qt::green;
+                break;
+            case 2:
+                return Qt::red;
+                break;
+        }
+    }
     void GraphPointPaint(int x, int y)
     {
         if (abs(x) > no_of_pixels / 2 && abs(y) > no_of_pixels / 2)
@@ -121,22 +133,31 @@ public:
             QGraphicsRectItem *rect = qgraphicsitem_cast<QGraphicsRectItem *>(item);
 
             QBrush *br = new QBrush(Qt::SolidPattern);
-            switch(brushColor){
-                case 0:
-                    br->setColor(Qt::yellow);
-                    break;
-                case 1:
-                    br->setColor(Qt::green);
-                    break;
-                case 2:
-                    br->setColor(Qt::red);
-                    break;
-            }
-
-
+            br->setColor(getBrushColor(brushColor));
             rect->setBrush(*br);
             rect->update();
         }
+    }
+    int checkPixelColor(int x , int y){
+        if (abs(x) > no_of_pixels / 2 && abs(y) > no_of_pixels / 2)
+        {
+            cout << "pixel coordinates: (" << x << "," << y << ") incorrect " << no_of_pixels * pixelsize / 2 << endl;
+            return -1;
+        }
+        else
+        {
+            QGraphicsItem *item = graphscene->itemAt(x * pixelsize, y * pixelsize, QTransform());
+            if (item == NULL)
+                return -1;
+
+            QGraphicsRectItem *rect = qgraphicsitem_cast<QGraphicsRectItem *>(item);
+
+            for(int i = 0; i<3; i++){
+                if(rect->brush().color() == getBrushColor(i))
+                    return i;
+            }
+        }
+        return -1;
     }
 
     void GraphReset()
@@ -168,5 +189,8 @@ public slots:
         pixelsize = p;
         no_of_pixels = n;
         GenerateGraph();
+    }
+    int GraphCheckPixel(int x, int y){
+        return checkPixelColor(x,y);
     }
 };

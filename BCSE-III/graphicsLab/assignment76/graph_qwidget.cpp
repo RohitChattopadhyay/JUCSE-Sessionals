@@ -7,7 +7,7 @@ graph_qWidget::graph_qWidget(QWidget *parent) : QWidget(parent)
     ker = 3;
     brushColorIdx = 0;
 }
-int graph_qWidget::linearSearch(int x,int y){
+int graph_qWidget::linearSearch(int x,int y){    
     for(int i=points.size()-1;i>-1;i--){
         QPair<QPair<int,int>, int>  it = points[i];
         if(it.first.first == x && it.first.second == y)

@@ -8,7 +8,8 @@ INCLUDEPATH += .
 QT += widgets
 
 # Input
-HEADERS += sources/contolpanel.h sources/graph.h
+HEADERS += sources/graph.h \
+    sources/controlpanel.h
 SOURCES += Display_simulator.cpp
 
 FORMS +=

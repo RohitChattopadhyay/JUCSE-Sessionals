@@ -600,10 +600,6 @@ void MainWindow::on_gridBgColor_textEdited(const QString &arg)
 // Filling Algorithm
 // Scanline
 void MainWindow::fillingScanLine(int xMin,int xMax,int yMin, int yMax,bool animate, int pixel,int boundary){
-    xMin-=5;
-    yMin-=5;
-    xMax+=5;
-    yMax+=5;
     ui->graph->brushColorIdx = pixel;
     for(int y = yMin; y<=yMax; y++){
         bool start = false;
