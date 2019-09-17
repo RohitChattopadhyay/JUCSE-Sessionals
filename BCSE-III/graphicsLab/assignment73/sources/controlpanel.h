@@ -90,9 +90,11 @@ public:
         clickCoordinate = new QLabel("<b>Clicked on :</b>");
         mouseCoordinate = new QLabel("<b>Mouse at :</b>");
         setBrushColor = new QComboBox();
+        setBrushColor->addItem("Remove Pixel");
         setBrushColor->addItem("Yellow");
         setBrushColor->addItem("Green");
         setBrushColor->addItem("Red");
+        setBrushColor->setCurrentIndex(1);
 
         QObject::connect(setGraphButton, SIGNAL(clicked()), this, SLOT(handleButton()));
 
@@ -261,9 +263,11 @@ public:
         QVBoxLayout *layoutFilling = new QVBoxLayout();
         fillingColorComboBox = new QComboBox();
         // Maintain order with Brush color
+        fillingColorComboBox->addItem("Transparent");
         fillingColorComboBox->addItem("Yellow");
         fillingColorComboBox->addItem("Green");
         fillingColorComboBox->addItem("Red");
+        fillingColorComboBox->setCurrentIndex(2);
 
         fillingAlgoComboBox = new QComboBox();
         fillingAlgoComboBox->addItem("Scanline");
@@ -287,9 +291,9 @@ public:
         QVBoxLayout *layout = new QVBoxLayout();
         allAssignments->addTab(primitiveDrawing,"Primitive");
         allAssignments->addTab(fillDrawing,"Filling");
-        allAssignments->addTab(bazierDrawing,"Bazier");
         allAssignments->addTab(clipDrawing,"Clipping");
         allAssignments->addTab(transformDrawing,"Transformation");
+        allAssignments->addTab(bazierDrawing,"Bazier");
         layout->addWidget(setGraphGroup);
         layout->addWidget(allAssignments);
         this->setLayout(layout);
@@ -676,6 +680,58 @@ public:
                 fillingFloodFill(x,y-1,pixel,old);
             }
         }
+        void fillingScanlineFill(int xMin,int xMax,int yMin, int yMax, int pixel,int edgeClr){
+            for(int x = xMin; x<=xMax; x++){
+                bool start = false;
+                int y1 = yMin;
+                QVector< QPair< int, int > > pointPair;
+                for(int y=yMin; y <=yMax; y++){
+                    if(emit GraphCheckPixelColor(x,y)==edgeClr){
+                        if(!start){
+                            pointPair.push_back(QPair<int, int> (y1+1,y-1));
+                            y1 = y;
+                            start = true;
+                        }
+                    }
+                    else {
+                        start = false;
+                    }
+                }
+//                if(pointPair.size()==3){
+//                    int temp = pointPair.size()-1;
+//                    for(int s = pointPair[temp].first ; s<=pointPair[temp].second ; s++){
+//                        if(emit GraphCheckPixelColor(x,s)!=edgeClr) emit GraphPlotSignal(x,s);
+//                    }
+//                }
+                for(int i = 1; i < pointPair.size() ; i += 2){
+                    for(int s = pointPair[i].first ; s<=pointPair[i].second ; s++){
+                        if(emit GraphCheckPixelColor(x,s)!=edgeClr) emit GraphPlotSignal(x,s);
+                    }
+                }
+                pointPair.clear();
+            }
+//            emit GraphPlotColorSignal(0);
+//            for(int x = xMin; x<=xMax; x++){
+//                bool start = false;
+//                int y1 = yMin;
+//                int count = 0;
+//                for(int y=yMin; y <=yMax; y++){
+//                    if(emit GraphCheckPixelColor(x,y)==edgeClr){
+//                        count++;
+//                        while(emit GraphCheckPixelColor(++x,y)==edgeClr);
+//                        x++;
+//                        if(count%2==0){
+//                            emit GraphPlotSignal(x,y);
+//                        }
+//                    }
+//                    else {
+//                        start = false;
+//                    }
+//                }
+//            }
+//            emit GraphPlotColorSignal(edgeClr);
+            return;
+        }
 signals:
     void GraphResetSignal(int, int);
     void GraphPlotSignal(int,int);
@@ -817,8 +873,8 @@ public slots:
         int pixelColor = fillingColorComboBox->currentIndex();
         int fillingMethod = fillingAlgoComboBox->currentIndex();
         emit GraphPlotColorSignal(boundaryColor);
+        int xMin,yMin,xMax,yMax,xTemp,yTemp;
         if((pointHistory.size()>=pointCount || fillingMethod==2 ) && pointCount>0){
-            int xMin,yMin,xMax,yMax,xTemp,yTemp;
             xMin = INT_MAX;
             yMin = INT_MAX;
             xMax = INT_MIN;
@@ -872,7 +928,7 @@ public slots:
         clock.start();
         switch(fillingMethod){
             case 0:
-//                this->fillingScanline(cx,cy,a,b);
+                this->fillingScanlineFill(xMin,xMax,yMin,yMax,pixelColor,boundaryColor);
                 break;
             case 1:
                 this->fillingBoundaryFill(startX,startY,pixelColor,boundaryColor);
@@ -898,7 +954,7 @@ public slots:
     void getPointSelect(pair<int, int> point)
     {
         emit GraphPlotColorSignal(setBrushColor->currentIndex());
-        QString QShowPoint = "<b>Clicked on :</b> " + QString::number(point.first) + " " + QString::number(point.second);
+        QString QShowPoint = "<b>Clicked on :</b> " + QString::number(point.first) + " " + QString::number(-1*point.second);
         clickCoordinate->setText(QShowPoint);
         pointHistory.push(point);
         if( allAssignments->currentIndex()==1)

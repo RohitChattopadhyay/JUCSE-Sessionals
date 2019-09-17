@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Graph_t {
-    QByteArrayData data[12];
-    char stringdata[101];
+    QByteArrayData data[13];
+    char stringdata[117];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,12 +40,13 @@ QT_MOC_LITERAL(7, 60, 1),
 QT_MOC_LITERAL(8, 62, 18),
 QT_MOC_LITERAL(9, 81, 14),
 QT_MOC_LITERAL(10, 96, 1),
-QT_MOC_LITERAL(11, 98, 1)
+QT_MOC_LITERAL(11, 98, 1),
+QT_MOC_LITERAL(12, 100, 15)
     },
     "Graph\0pointSelect\0\0pair<int,int>\0"
     "pointHover\0GraphPlotSlot\0x\0y\0"
     "GraphPlotColorSlot\0GraphResetSlot\0p\0"
-    "n\0"
+    "n\0GraphCheckPixel\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -55,7 +56,7 @@ static const uint qt_meta_data_Graph[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -63,13 +64,14 @@ static const uint qt_meta_data_Graph[] = {
        2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   39,    2, 0x05,
-       4,    1,   42,    2, 0x05,
+       1,    1,   44,    2, 0x05,
+       4,    1,   47,    2, 0x05,
 
  // slots: name, argc, parameters, tag, flags
-       5,    2,   45,    2, 0x0a,
-       8,    1,   50,    2, 0x0a,
-       9,    2,   53,    2, 0x0a,
+       5,    2,   50,    2, 0x0a,
+       8,    1,   55,    2, 0x0a,
+       9,    2,   58,    2, 0x0a,
+      12,    2,   63,    2, 0x0a,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
@@ -79,6 +81,7 @@ static const uint qt_meta_data_Graph[] = {
     QMetaType::Void, QMetaType::Int, QMetaType::Int,    6,    7,
     QMetaType::Void, QMetaType::Int,    6,
     QMetaType::Void, QMetaType::Int, QMetaType::Int,   10,   11,
+    QMetaType::Int, QMetaType::Int, QMetaType::Int,    6,    7,
 
        0        // eod
 };
@@ -93,6 +96,8 @@ void Graph::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
         case 2: _t->GraphPlotSlot((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         case 3: _t->GraphPlotColorSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 4: _t->GraphResetSlot((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 5: { int _r = _t->GraphCheckPixel((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -138,13 +143,13 @@ int Graph::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 6;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 5)
+        if (_id < 6)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 5;
+        _id -= 6;
     }
     return _id;
 }

@@ -104,12 +104,15 @@ public:
     QColor getBrushColor(int c){
         switch(c){
             case 0:
-                return Qt::yellow;
+                return Qt::transparent;
                 break;
             case 1:
-                return Qt::green;
+                return Qt::yellow;
                 break;
             case 2:
+                return Qt::green;
+                break;
+            case 3:
                 return Qt::red;
                 break;
         }
