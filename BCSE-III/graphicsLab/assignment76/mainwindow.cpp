@@ -44,6 +44,9 @@ void MainWindow::Mouse_Pressed()
     ui->graph->repaint();
     if(ui->algoTab->currentIndex()==1)
         ui->fillingPointsCount->setText(QString::number(ui->fillingPointsCount->text().toInt()+1));
+
+    if(ui->algoTab->currentIndex()==2)
+        ui->clipPointCount->setText(QString::number(floor(ui->graph->recent.size()/2)));
 }
 
 void MainWindow::Mouse_left()
@@ -150,7 +153,7 @@ void MainWindow::drawLineDDA(float x0, float y0, float x1, float y1){
 }
 
 // Bresenham
-void MainWindow::bresenhamPlotLineLow(int x0,int y0,int x1, int y1){
+void MainWindow::bresenhamPlotLineLow(int x0,int y0,int x1, int y1, bool animate = true){
     int dx = x1-x0;
     int dy = y1-y0;
     int yi = 1;
@@ -162,7 +165,7 @@ void MainWindow::bresenhamPlotLineLow(int x0,int y0,int x1, int y1){
     int y = y0;
     for(int x = x0; x<=x1;x++){
         insertPoint(x,y);
-        ui->graph->repaint();
+        if(animate) ui->graph->repaint();
         if(D>0){
             y += yi;
             D -= 2*dx;
@@ -170,7 +173,7 @@ void MainWindow::bresenhamPlotLineLow(int x0,int y0,int x1, int y1){
         D += 2*dy;
     }
 }
-void MainWindow::bresenhamPlotLineHigh(int x0,int y0,int x1, int y1){
+void MainWindow::bresenhamPlotLineHigh(int x0,int y0,int x1, int y1, bool animate = true){
     int dx = x1-x0;
     int dy = y1-y0;
     int xi = 1;
@@ -182,7 +185,7 @@ void MainWindow::bresenhamPlotLineHigh(int x0,int y0,int x1, int y1){
     int x = x0;
     for(int y = y0; y<=y1;y++){
         insertPoint(x,y);
-        ui->graph->repaint();
+        if(animate) ui->graph->repaint();
         if(D>0){
             x += xi;
             D -= 2*dy;
@@ -190,18 +193,18 @@ void MainWindow::bresenhamPlotLineHigh(int x0,int y0,int x1, int y1){
         D += 2*dx;
     }
 }
-void MainWindow::drawLineBresenham(float x0, float y0, float x1, float y1){
+void MainWindow::drawLineBresenham(float x0, float y0, float x1, float y1, bool animate = true){
     if (abs(y1-y0) < abs(x1-x0)) {
         if (x0 > x1)
-            bresenhamPlotLineLow(x1,y1,x0,y0);
+            bresenhamPlotLineLow(x1,y1,x0,y0,animate);
         else
-            bresenhamPlotLineLow(x0,y0,x1,y1);
+            bresenhamPlotLineLow(x0,y0,x1,y1,animate);
     }
     else {
         if (y0 > y1)
-            bresenhamPlotLineHigh(x1,y1,x0,y0);
+            bresenhamPlotLineHigh(x1,y1,x0,y0,animate);
         else
-            bresenhamPlotLineHigh(x0,y0,x1,y1);
+            bresenhamPlotLineHigh(x0,y0,x1,y1,animate);
     }
 }
 
@@ -739,3 +742,175 @@ void MainWindow::on_fillingButton_clicked()
     }
 }
 
+
+void MainWindow::on_clipWindowButton_clicked()
+{
+    int width = ui->clipWindowWidth->text().toInt();
+    int height = ui->clipWindowHeight->text().toInt();
+    if(ui->graph->recent.size()>0 && width*height!=0){
+        int tempBrushColor = ui->graph->brushColorIdx;
+        ui->graph->brushColorIdx = 4;
+        clipWinX = ui->graph->recent[0].first.toInt();
+        clipWinY = ui->graph->recent[0].second.toInt();
+        ui->graph->recent.pop_front();
+        drawLineBresenham(clipWinX,clipWinY,clipWinX+width,clipWinY);
+        drawLineBresenham(clipWinX,clipWinY,clipWinX,clipWinY+height);
+        drawLineBresenham(clipWinX+width,clipWinY,clipWinX+width,clipWinY+height);
+        drawLineBresenham(clipWinX,clipWinY+height,clipWinX+width,clipWinY+height);
+        ui->graph->brushColorIdx = tempBrushColor;
+    }
+}
+
+//Clipping
+// Linear clipping
+int clipGetPointCode(int x, int y, int x_min, int y_min, int x_max, int y_max )
+{
+    // initialized as being inside
+    int code = 0;
+
+    if (x < x_min)       // to the left of rectangle
+        code |= 1;
+    else if (x > x_max)  // to the right of rectangle
+        code |= 2;
+    if (y < y_min)       // below the rectangle
+        code |= 4;
+    else if (y > y_max)  // above the rectangle
+        code |= 8;
+
+    return code;
+}
+void MainWindow::linearClip(){
+    int width = ui->clipWindowWidth->text().toInt();
+    int height = ui->clipWindowHeight->text().toInt();
+    int xMin = clipWinX;
+    int xMax = clipWinX + width;
+    int yMin = clipWinY;
+    int yMax = clipWinY + height;
+    QVector< QPair < QVector< int > , QVector< int > > > lines;
+    while(ui->graph->recent.size()){
+        QVector< int > a;
+        a.push_back(ui->graph->recent[0].first.toInt());
+        a.push_back(ui->graph->recent[0].second.toInt());
+        a.push_back(clipGetPointCode(ui->graph->recent[0].first.toInt(),ui->graph->recent[0].second.toInt(),xMin,yMin,xMax,yMax));
+        ui->graph->recent.pop_front();
+        QVector< int > b;
+        b.push_back(ui->graph->recent[0].first.toInt());
+        b.push_back(ui->graph->recent[0].second.toInt());
+        b.push_back(clipGetPointCode(ui->graph->recent[0].first.toInt(),ui->graph->recent[0].second.toInt(),xMin,yMin,xMax,yMax));
+        ui->graph->recent.pop_front();
+        lines.push_back(qMakePair(a,b));
+    }
+    for( int i = 0; i < lines.size();i++){
+        QPair < QVector< int > , QVector< int > > line = lines[i];
+        QVector< int > a = line.first;
+        QVector< int > b = line.second;
+        int sX = a[0];
+        int sY = a[1];
+        int s  = a[2];
+        int eX = b[0];
+        int eY = b[1];
+        int e  = b[2];
+        bool accept = false;
+        while (true)
+            {
+                if ((s == 0) && (e == 0))
+                {
+                    accept = true;
+                    drawLineBresenham(sX,sY,eX,eY);
+                    break;
+                }
+                else if (s & e)
+                {
+                    break;
+                }
+                else
+                {
+                    int code_out;
+                    double x, y;
+
+                    if (s != 0)
+                        code_out = s;
+                    else
+                        code_out = e;
+
+                    if (code_out & 8)
+                    {
+                        x = sX + (eX - sX) * (yMax - sY) / (eY - sY);
+                        y = yMax;
+                    }
+                    else if (code_out & 4)
+                    {
+                        x = sX + (eX - sX) * (yMin - sY) / (eY - sY);
+                        y = yMin;
+                    }
+                    else if (code_out & 2)
+                    {
+                        y = sY + (eY - sY) * (xMax - sX) / (eX - sX);
+                        x = xMax;
+                    }
+                    else if (code_out & 1)
+                    {
+                        // point is to the left of rectangle
+                        y = sY + (eY - sY) * (xMin - sX) / (eX - sX);
+                        x = xMin;
+                    }
+
+                    if (code_out == s)
+                    {
+                        sX = x;
+                        sY = y;
+                        s = clipGetPointCode(sX,sY,xMin,yMin,xMax,yMax);
+                        line.first[0] = sX;
+                        line.first[0] = sY;
+                        line.first[0] = s;
+                    }
+                    else
+                    {
+                        eX = x;
+                        eY = y;
+                        e = clipGetPointCode(eX,eY,xMin,yMin,xMax,yMax);
+                        line.second[0] = eX;
+                        line.second[0] = eY;
+                        line.second[0] = e;
+                    }
+                }
+            }
+        if(!accept)
+            lines.erase(lines.begin() + i);
+    }
+}
+
+// Polygon Clipping
+void MainWindow::polygonClip(){
+    int tempBrushColor = ui->graph->brushColorIdx;
+    QVector<QPair<QPair<int,int> , int > > temp;
+    int width = ui->clipWindowWidth->text().toInt();
+    int height = ui->clipWindowHeight->text().toInt();
+    for(int i = clipWinX; i < clipWinX + width ; i++)
+        for(int j = clipWinY; j < clipWinY + height ; j++)
+            if(ui->graph->linearSearch(i,j)!=-1)
+                temp.push_back(qMakePair(qMakePair(i,j),ui->graph->linearSearch(i,j)));
+    ui->graph->points.clear();
+    ui->graph->brushColorIdx = 4;
+    drawLineBresenham(clipWinX,clipWinY,clipWinX+width,clipWinY,false);
+    drawLineBresenham(clipWinX,clipWinY,clipWinX,clipWinY+height,false);
+    drawLineBresenham(clipWinX+width,clipWinY,clipWinX+width,clipWinY+height,false);
+    drawLineBresenham(clipWinX,clipWinY+height,clipWinX+width,clipWinY+height,false);
+    for(QPair<QPair<int,int> , int > i : temp){
+        ui->graph->brushColorIdx = i.second;
+        insertPoint(i.first.first,i.first.second);
+    }
+    ui->graph->brushColorIdx = tempBrushColor;
+    ui->graph->repaint();
+}
+void MainWindow::on_clipButton_clicked()
+{
+    switch(ui->clipMethodAlgoBox->currentIndex()){
+        case 0:
+            linearClip();
+            break;
+        case 1:
+            polygonClip();
+            break;
+    }
+}

@@ -19,6 +19,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    //Clipping
+    int clipWinX,clipWinY;
+
 private slots:
         void Mouse_current_pos();
         void Mouse_Pressed();
@@ -33,9 +36,9 @@ private slots:
         // Line Drawing Algorithms
         void drawLineParametric(int,int,int,int);
         void drawLineDDA(float,float,float,float);
-        void drawLineBresenham(float,float,float,float);
-        void bresenhamPlotLineLow(int,int,int,int);
-        void bresenhamPlotLineHigh(int,int,int,int);        
+        void drawLineBresenham(float,float,float,float,bool);
+        void bresenhamPlotLineLow(int,int,int,int,bool);
+        void bresenhamPlotLineHigh(int,int,int,int,bool);
         void on_lineDraw_button_clicked();
 
         // Circle Drawing Algorithm
@@ -60,6 +63,12 @@ private slots:
         void fillingScanLine(int, int, int, int, bool, int, int);
         void boundaryFill(int, int, bool, int, int);
         void floodFill(int, int, bool, int, int);
+
+        //Clipping
+        void linearClip();
+        void polygonClip();
+        void on_clipWindowButton_clicked();
+        void on_clipButton_clicked();
 
 private:
     Ui::MainWindow *ui;
