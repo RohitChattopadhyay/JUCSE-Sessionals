@@ -1118,3 +1118,33 @@ void MainWindow::on_transRefBtn_clicked()
     }
     ui->graph->repaint();
 }
+
+void MainWindow::on_bezierBtn_clicked()
+{
+    if(ui->graph->recent.size() < 4){
+        statusBar()->showMessage("Error: Insufficient Points");
+    }
+    else{
+        int x1,x2,x3,x4,y1,y2,y3,y4;
+        x1 = ui->graph->recent[0].first.toInt();
+        y1 = ui->graph->recent[0].second.toInt();
+        ui->graph->recent.pop_front();
+        x2 = ui->graph->recent[0].first.toInt();
+        y2 = ui->graph->recent[0].second.toInt();
+        ui->graph->recent.pop_front();
+        x3 = ui->graph->recent[0].first.toInt();
+        y3 = ui->graph->recent[0].second.toInt();
+        ui->graph->recent.pop_front();
+        x4 = ui->graph->recent[0].first.toInt();
+        y4 = ui->graph->recent[0].second.toInt();
+        ui->graph->recent.pop_front();
+        double xu = 0.0 , yu = 0.0, u = 0.0;
+        for(u = 0.0 ; u <= 1.0 ; u += 0.0001)
+        {
+            xu = pow(1-u,3)*x1 + 3*u*pow(1-u,2)*x2 + 3*pow(u,2)*(1-u)*x3 + pow(u,3)*x4;
+            yu = pow(1-u,3)*y1 + 3*u*pow(1-u,2)*y2 + 3*pow(u,2)*(1-u)*y3 + pow(u,3)*y4;
+            insertPoint((int)xu , (int)yu);
+        }
+        ui->graph->repaint();
+    }
+}

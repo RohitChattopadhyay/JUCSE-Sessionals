@@ -78,6 +78,8 @@ private slots:
         void reflectAboutLine();
         void on_transRefBtn_clicked();
 
+        void on_bezierBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     QLabel *statusLabel;
