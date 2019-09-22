@@ -749,7 +749,7 @@ void MainWindow::on_clipWindowButton_clicked()
     int height = ui->clipWindowHeight->text().toInt();
     if(ui->graph->recent.size()>0 && width*height!=0){
         int tempBrushColor = ui->graph->brushColorIdx;
-        ui->graph->brushColorIdx = 4;
+//        ui->graph->brushColorIdx = 4;
         clipWinX = ui->graph->recent[0].first.toInt();
         clipWinY = ui->graph->recent[0].second.toInt();
         ui->graph->recent.pop_front();
@@ -787,7 +787,7 @@ void MainWindow::linearClip(){
     int yMin = clipWinY;
     int yMax = clipWinY + height;
     QVector< QPair < QVector< int > , QVector< int > > > lines;
-    while(ui->graph->recent.size()){
+    while(ui->graph->recent.size()!=0){
         QVector< int > a;
         a.push_back(ui->graph->recent[0].first.toInt());
         a.push_back(ui->graph->recent[0].second.toInt());
@@ -810,17 +810,21 @@ void MainWindow::linearClip(){
         int eX = b[0];
         int eY = b[1];
         int e  = b[2];
-        bool accept = false;
         while (true)
             {
                 if ((s == 0) && (e == 0))
                 {
-                    accept = true;
                     drawLineBresenham(sX,sY,eX,eY);
                     break;
                 }
                 else if (s & e)
                 {
+                    line.first[0] = -1;
+                    line.first[1] = -1;
+                    line.first[2] = -1;
+                    line.second[0] = -1;
+                    line.second[1] = -1;
+                    line.second[2] = -1;
                     break;
                 }
                 else
@@ -850,7 +854,6 @@ void MainWindow::linearClip(){
                     }
                     else if (code_out & 1)
                     {
-                        // point is to the left of rectangle
                         y = sY + (eY - sY) * (xMin - sX) / (eX - sX);
                         x = xMin;
                     }
@@ -875,36 +878,121 @@ void MainWindow::linearClip(){
                     }
                 }
             }
-        if(!accept)
-            lines.erase(lines.begin() + i);
     }
 }
 
 // Polygon Clipping
 void MainWindow::polygonClip(){
-    int tempBrushColor = ui->graph->brushColorIdx;
-    QVector<QPair<QPair<int,int> , int > > temp;
     int width = ui->clipWindowWidth->text().toInt();
     int height = ui->clipWindowHeight->text().toInt();
-    for(int i = clipWinX; i < clipWinX + width ; i++)
-        for(int j = clipWinY; j < clipWinY + height ; j++)
-            if(ui->graph->linearSearch(i,j)!=-1)
-                temp.push_back(qMakePair(qMakePair(i,j),ui->graph->linearSearch(i,j)));
-    ui->graph->points.clear();
-    ui->graph->brushColorIdx = 4;
-    drawLineBresenham(clipWinX,clipWinY,clipWinX+width,clipWinY,false);
-    drawLineBresenham(clipWinX,clipWinY,clipWinX,clipWinY+height,false);
-    drawLineBresenham(clipWinX+width,clipWinY,clipWinX+width,clipWinY+height,false);
-    drawLineBresenham(clipWinX,clipWinY+height,clipWinX+width,clipWinY+height,false);
-    for(QPair<QPair<int,int> , int > i : temp){
-        ui->graph->brushColorIdx = i.second;
-        insertPoint(i.first.first,i.first.second);
+    int xMin = clipWinX;
+    int xMax = clipWinX + width;
+    int yMin = clipWinY;
+    int yMax = clipWinY + height;
+    QVector< QPair < QVector< int > , QVector< int > > > lines;
+    QVector< int > first;
+    first.push_back(ui->graph->recent[0].first.toInt());
+    first.push_back(ui->graph->recent[0].second.toInt());
+    first.push_back(clipGetPointCode(ui->graph->recent[0].first.toInt(),ui->graph->recent[0].second.toInt(),xMin,yMin,xMax,yMax));
+    QVector< int > b;
+    while(ui->graph->recent.size()>1){
+        QVector< int > a;
+        a.push_back(ui->graph->recent[0].first.toInt());
+        a.push_back(ui->graph->recent[0].second.toInt());
+        a.push_back(clipGetPointCode(ui->graph->recent[0].first.toInt(),ui->graph->recent[0].second.toInt(),xMin,yMin,xMax,yMax));
+        ui->graph->recent.pop_front();
+        b.clear();
+        b.push_back(ui->graph->recent[0].first.toInt());
+        b.push_back(ui->graph->recent[0].second.toInt());
+        b.push_back(clipGetPointCode(ui->graph->recent[0].first.toInt(),ui->graph->recent[0].second.toInt(),xMin,yMin,xMax,yMax));
+        lines.push_back(qMakePair(a,b));
     }
-    ui->graph->brushColorIdx = tempBrushColor;
-    ui->graph->repaint();
+    lines.push_back(qMakePair(b,first));
+    for( int i = 0; i < lines.size();i++){
+        QPair < QVector< int > , QVector< int > > line = lines[i];
+        QVector< int > a = line.first;
+        QVector< int > b = line.second;
+        int sX = a[0];
+        int sY = a[1];
+        int s  = a[2];
+        int eX = b[0];
+        int eY = b[1];
+        int e  = b[2];
+        while (true)
+            {
+                if ((s == 0) && (e == 0))
+                {
+                    drawLineBresenham(sX,sY,eX,eY);
+                    break;
+                }
+                else if (s & e)
+                {
+                    line.first[0] = -1;
+                    line.first[1] = -1;
+                    line.first[2] = -1;
+                    line.second[0] = -1;
+                    line.second[1] = -1;
+                    line.second[2] = -1;
+                    break;
+                }
+                else
+                {
+                    int code_out;
+                    double x, y;
+
+                    if (s != 0)
+                        code_out = s;
+                    else
+                        code_out = e;
+
+                    if (code_out & 8)
+                    {
+                        x = sX + (eX - sX) * (yMax - sY) / (eY - sY);
+                        y = yMax;
+                    }
+                    else if (code_out & 4)
+                    {
+                        x = sX + (eX - sX) * (yMin - sY) / (eY - sY);
+                        y = yMin;
+                    }
+                    else if (code_out & 2)
+                    {
+                        y = sY + (eY - sY) * (xMax - sX) / (eX - sX);
+                        x = xMax;
+                    }
+                    else if (code_out & 1)
+                    {
+                        y = sY + (eY - sY) * (xMin - sX) / (eX - sX);
+                        x = xMin;
+                    }
+
+                    if (code_out == s)
+                    {
+                        sX = x;
+                        sY = y;
+                        s = clipGetPointCode(sX,sY,xMin,yMin,xMax,yMax);
+                        line.first[0] = sX;
+                        line.first[0] = sY;
+                        line.first[0] = s;
+                    }
+                    else
+                    {
+                        eX = x;
+                        eY = y;
+                        e = clipGetPointCode(eX,eY,xMin,yMin,xMax,yMax);
+                        line.second[0] = eX;
+                        line.second[0] = eY;
+                        line.second[0] = e;
+                    }
+                }
+            }
+
+    }
 }
 void MainWindow::on_clipButton_clicked()
 {
+    QTime timer;
+    timer.start();
     switch(ui->clipMethodAlgoBox->currentIndex()){
         case 0:
             linearClip();
@@ -913,4 +1001,120 @@ void MainWindow::on_clipButton_clicked()
             polygonClip();
             break;
     }
+    statusBar()->showMessage("Time taken: "+QString::number(timer.elapsed()) + "ms",2000);
+}
+
+void MainWindow::on_transShearBtn_clicked()
+{
+    float hX = ui->transShearX->text().toFloat();
+    float hY = ui->transShearY->text().toFloat();
+    for(int i = 0; i < ui->graph->points.size(); i++){
+        int x = ui->graph->points[i].first.first;
+        int y = ui->graph->points[i].first.second;
+        ui->graph->points[i].first.first = x + hX*y;
+        ui->graph->points[i].first.second = y + hY*x;
+    }
+    ui->graph->repaint();
+}
+
+void MainWindow::on_transScaleBtn_clicked()
+{
+    float sX = ui->transScaleX->text().toFloat();
+    float sY = ui->transScaleY->text().toFloat();
+    if(sX*sY==0){
+        statusBar()->showMessage("Error: Scale cannot be 0",2000);
+        return;
+    }
+    for(int i = 0; i < ui->graph->points.size(); i++){
+        int x = ui->graph->points[i].first.first;
+        int y = ui->graph->points[i].first.second;
+        ui->graph->points[i].first.first = x*sX;
+        ui->graph->points[i].first.second = y*sY;
+    }
+    ui->graph->repaint();
+}
+
+void MainWindow::on_transTranslateBtn_clicked()
+{
+    float tX = ui->transTranslateX->text().toFloat();
+    float tY = ui->transTranslateY->text().toFloat();
+    for(int i = 0; i < ui->graph->points.size(); i++){
+        int x = ui->graph->points[i].first.first;
+        int y = ui->graph->points[i].first.second;
+        ui->graph->points[i].first.first = x + tX;
+        ui->graph->points[i].first.second = y + tY;
+    }
+    ui->graph->repaint();
+}
+
+void MainWindow::on_transRotBtn_clicked()
+{
+    float rad = ui->transRotDeg->text().toFloat()*0.0174533;
+    float c = cos(rad);
+    float s = sin(rad);
+    for(int i = 0; i < ui->graph->points.size(); i++){
+        int x = ui->graph->points[i].first.first;
+        int y = ui->graph->points[i].first.second;
+        ui->graph->points[i].first.first = x*c - y*s;
+        ui->graph->points[i].first.second = x*s + y*c;
+    }
+    ui->graph->repaint();
+}
+
+void MainWindow::reflectAboutLine(){
+    if(ui->graph->recent.size()<2){
+        statusBar()->showMessage("Error: Line not drawn",2000);
+        return;
+    }
+    int x1 = ui->graph->recent[0].first.toInt();
+    int y1 = ui->graph->recent[0].second.toInt();
+    ui->graph->recent.pop_front();
+    int x2 = ui->graph->recent[0].first.toInt();
+    int y2 = ui->graph->recent[0].second.toInt();
+    ui->graph->recent.pop_front();
+    float constant = (y2*x1-y1*x2)/(y2-y1 + 0.0);
+    float m = (y2-y1)/(x2-x1 + 0.0);
+    float theta = qAtan(-1*m);
+    float c = cos(theta);
+    float s = sin(theta);
+    for(int i = 0; i < ui->graph->points.size(); i++){
+       int x = ui->graph->points[i].first.first-constant;
+       int y = ui->graph->points[i].first.second;
+       ui->graph->points[i].first.first = x*c - y*s;
+       ui->graph->points[i].first.second = -1*(x*s + y*c);
+    }
+    s *= -1;
+    for(int i = 0; i < ui->graph->points.size(); i++){
+       int x = ui->graph->points[i].first.first;
+       int y = ui->graph->points[i].first.second;
+       ui->graph->points[i].first.first = x*c - y*s+constant;
+       ui->graph->points[i].first.second = x*s + y*c;
+    }
+    int tempBrushColor = ui->graph->brushColorIdx;
+    ui->graph->brushColorIdx++;
+    ui->graph->brushColorIdx = ui->graph->brushColorIdx%5;
+    drawLineBresenham(x1,y1,x2,y2,false);
+    ui->graph->brushColorIdx = tempBrushColor;
+    ui->graph->repaint();
+}
+
+void MainWindow::on_transRefBtn_clicked()
+{
+    int mX = -1;
+    int mY = 1;
+    switch(ui->transRefCombo->currentIndex()){
+        case 0:
+            mX = 1;
+            mY = -1;
+        case 1:
+            for(int i = 0; i < ui->graph->points.size(); i++){
+                ui->graph->points[i].first.first *= mX;
+                ui->graph->points[i].first.second *= mY;
+            }
+            break;
+        case 2:
+            reflectAboutLine();
+            break;
+    }
+    ui->graph->repaint();
 }

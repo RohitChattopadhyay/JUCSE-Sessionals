@@ -70,6 +70,14 @@ private slots:
         void on_clipWindowButton_clicked();
         void on_clipButton_clicked();
 
+        //Transformation
+        void on_transShearBtn_clicked();
+        void on_transScaleBtn_clicked();
+        void on_transTranslateBtn_clicked();
+        void on_transRotBtn_clicked();
+        void reflectAboutLine();
+        void on_transRefBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     QLabel *statusLabel;
