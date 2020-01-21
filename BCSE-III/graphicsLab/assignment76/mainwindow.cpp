@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     statusLabel = new QLabel("");
     statusLabel->setMinimumWidth(75);
-    statusBar()->addPermanentWidget(new QLabel("Coordinates: "));
+    statusBar()->addPermanentWidget(new QLabel(QString::fromUtf8("\u0995\u09CB")));
     statusBar()->addPermanentWidget(statusLabel);
     connect(ui->graph, SIGNAL(Mouse_Pos()),this,SLOT(Mouse_current_pos()));
     connect(ui->graph, SIGNAL(Mouse_Pressed()),this,SLOT(Mouse_Pressed()));

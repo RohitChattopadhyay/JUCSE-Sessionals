@@ -1,0 +1,11 @@
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\bin\Debug\netcoreapp3.0\TEST.exe
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\bin\Debug\netcoreapp3.0\TEST.deps.json
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\bin\Debug\netcoreapp3.0\TEST.runtimeconfig.json
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\bin\Debug\netcoreapp3.0\TEST.runtimeconfig.dev.json
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\bin\Debug\netcoreapp3.0\TEST.dll
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\bin\Debug\netcoreapp3.0\TEST.pdb
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\obj\Debug\netcoreapp3.0\TEST.csprojAssemblyReference.cache
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\obj\Debug\netcoreapp3.0\TEST.AssemblyInfoInputs.cache
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\obj\Debug\netcoreapp3.0\TEST.AssemblyInfo.cs
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\obj\Debug\netcoreapp3.0\TEST.dll
+E:\jucse\gitRepo\BCSE-III\dbmsLab\TEST\obj\Debug\netcoreapp3.0\TEST.pdb

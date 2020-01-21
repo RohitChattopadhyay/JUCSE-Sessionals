@@ -1,35 +1,42 @@
-;100% working :)
-;count from 00 to 99 in decimal
-
-
 .model small
 .stack 64h
 .data
-	no db 13,10
-	x db ?
-	y db ?,'$'
+	input db 10,0,10 dup(?)
+	count db 0
 .code
-	mov ax,@data
-	mov ds,ax
-	mov x,30h
+	;reading string
+    mov  dx, offset input
+    mov  ah, 0Ah
+    int  21h 
 
-	up1: mov y,30h
-		 
-	up2: lea dx,no
-		 mov ah,09h
-		 int 21h
-		 mov bx,0fffh
-	
-	d1: mov cx,0ffh
-	del: loop del
-		 dec bx
-		 jnz d1
-		 inc y
-		 cmp y,03ah
-		 jl up2
-		 inc x
-		 cmp x,03ah
-		 jl up1
-		 mov ah,04ch
-		 int 21h
+ ;checking for vowels
+    xor  cx, cx            ; Also clears the CX register like `mov cx, 0`
+    mov  count, cl         ; Count = 0
+    mov  si, offset input+2 
+    mov  cl, [si-1]        ; length is 2nd byte
+ counting:
+    cmp  [si], 'a'
+    je   count1 
+    cmp  [si], 'e'
+    je   count1
+    cmp  [si], 'i'
+    je   count1
+    cmp  [si], 'o'
+    je   count1
+    cmp  [si], 'u'
+    je   count1
+    inc  si
+    loop counting
+    cmp  cl, 0 
+    je   exit
+ count1:
+    inc  count 
+    inc  si
+    loop counting 
+	exit:
+	mov dl, count
+	mov ah,02h
+	int 21h
+	mov ah,04ch
+	int 21h
 end
