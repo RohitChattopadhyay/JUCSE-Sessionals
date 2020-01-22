@@ -1,9 +1,0 @@
-E:\jucse\gitRepo\BCSE-III\dbmsLab\WindowsFormsApp2\bin\Debug\WindowsFormsApp2.exe.config
-E:\jucse\gitRepo\BCSE-III\dbmsLab\WindowsFormsApp2\bin\Debug\WindowsFormsApp2.exe
-E:\jucse\gitRepo\BCSE-III\dbmsLab\WindowsFormsApp2\bin\Debug\WindowsFormsApp2.pdb
-E:\jucse\gitRepo\BCSE-III\dbmsLab\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.csprojAssemblyReference.cache
-E:\jucse\gitRepo\BCSE-III\dbmsLab\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.Form1.resources
-E:\jucse\gitRepo\BCSE-III\dbmsLab\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.Properties.Resources.resources
-E:\jucse\gitRepo\BCSE-III\dbmsLab\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.csproj.GenerateResource.cache
-E:\jucse\gitRepo\BCSE-III\dbmsLab\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.exe
-E:\jucse\gitRepo\BCSE-III\dbmsLab\WindowsFormsApp2\obj\Debug\WindowsFormsApp2.pdb
