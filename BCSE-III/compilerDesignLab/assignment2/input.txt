@@ -1,0 +1,16 @@
+int compare(float n, float m)
+{
+	int k = n * m + 50;
+	float 4abc = 45.;
+	// This is a single line comment
+	if(n > m)
+		return n;
+	else
+		return m;	
+	/* this is 
+	a multiline
+	comment */
+
+}
+    
+

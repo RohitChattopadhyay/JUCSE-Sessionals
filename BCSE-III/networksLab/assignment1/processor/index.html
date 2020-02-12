@@ -1,0 +1,125 @@
+<html>
+    <title>Assignment 1 Results | Networks Lab</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.1/css/foundation.min.css">
+    <style>
+        .codeFont {
+            font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+        }
+        .PASS {
+            background-color: #28a745!important;
+            color:white;
+        }
+        .FAIL {
+            background-color: #dc3545!important;
+            color:white;
+        }
+        table td{
+            border: 1px
+        }
+    </style>
+    <script>        
+        function readTextFile(file)
+        {
+            var rawFile = new XMLHttpRequest();
+            rawFile.open("GET", file, false);
+            var allText;
+            rawFile.onreadystatechange = function ()            
+            {
+                if(rawFile.readyState === 4)
+                {
+                    if(rawFile.status === 200 || rawFile.status == 0)
+                    {
+                        allText = rawFile.responseText;
+                    }
+                }
+            }
+            rawFile.send(null);
+            return allText.split("\n");
+        }
+    </script>
+    <body>
+        <nav class="navbar navbar-dark bg-dark top-bar" style="padding-left: 6em;padding-right: 6em;">
+            <h4 class="navbar-brand w-100 top-bar-title">Networks Lab Assignment 1</h4>
+            <span class="top-bar-right">Priti Shaw, 001710501076</span>
+        </nav>
+        <div class="grid-container">
+            <div class="row">
+                <div class="large-12.columns">
+                    <p style="text-align: center;">
+                        
+                    </p>
+                    <p>
+                        <b>Question<br></b>Design and implement an error detection module that has four schemes namely LRC, VRC, Checksum, and CRC. Please note that you may need to use theseschemes separately for other applications(assignments).  You can write the program in any language.  The Sender program should accept the name of a test file(contains a sequence of 0,1) from the command line.  Then it will prepare the data frame(decide the size of the frame) from the input.  Based on the schemes, codeword will be prepared. The sender will send the codeword to the Receiver.The receiver will extract the data word from the codeword and show if there is any error detected.
+                    </p>                                        
+                    <p><b>Input:</b> <span id="sent" class="codeFont"></span></p>                    
+                </div>
+                <div class="large-12.columns">
+                    <b>Results:</b>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Sent</th>
+                                <th>VRC</th>
+                                <th>LRC</th>
+                                <th>Checksum</th>
+                                <th>CRC</th>
+                            </tr>
+                        </thead>
+                        <tbody class="codeFont" id="resultBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>
+            $("#sent").html(readTextFile("sender_data.txt"));
+            const frames =readTextFile("sender_frame.txt");
+            const vrc =readTextFile("vrc_frame_chk.txt");
+            const lrc =readTextFile("lrc_frame_chk.txt");
+            const lrc_res = lrc.shift();
+            const checksum =readTextFile("checksum_frame_chk.txt");
+            const checksum_res = checksum.shift();
+            const crc =readTextFile("crc_frame_chk.txt");
+            var html = "";
+            for(var i = 0; i < Math.max(vrc.length,checksum.length,crc.length,lrc.length)-1;i++){                
+                html += "<tr>"
+                if(frames[i]){
+                    html += "<td>"+frames[i]+"</td>";
+                }
+                else
+                    html += "<td></td>"
+                
+                if(vrc[i]){
+                    var comp = vrc[i].split(";")
+                    html += "<td class='"+comp[1]+"'>"+comp[0]+"</td>";
+                }
+                else
+                    html += "<td></td>"   
+
+                if(lrc[i]){
+                    html += "<td class='"+lrc_res+"'>"+lrc[i]+"</td>";
+                }
+                else
+                    html += "<td></td>"
+
+                
+                if(checksum[i]){
+                    html += "<td class='"+checksum_res+"'>"+checksum[i]+"</td>";
+                }
+                else
+                    html += "<td></td>"
+                
+                if(crc[i]){
+                    var comp = crc[i].split(";")
+                    html += "<td class='"+comp[1]+"'>"+comp[0]+"</td>";
+                }
+                else
+                    html += "<td></td>"  
+
+                    html += "</tr>"
+            }
+            $("#resultBody").html(html)
+        </script>
+    </body>
+</html>
