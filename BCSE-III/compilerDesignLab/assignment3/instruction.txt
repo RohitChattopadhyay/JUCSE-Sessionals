@@ -1,0 +1,7 @@
+C:\Users\user\Desktop\FLEX_BISON>win_flex.exe AnBn.l
+
+C:\Users\user\Desktop\FLEX_BISON>win_bison.exe -y -d AnBn.y
+
+C:\Users\user\Desktop\FLEX_BISON>gcc -c lex.yy.c y.tab.c
+
+C:\Users\user\Desktop\FLEX_BISON>gcc y.tab.o lex.yy.o -o AnBn.exe
