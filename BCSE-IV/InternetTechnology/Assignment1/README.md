@@ -23,10 +23,16 @@ The program is developed using socket programing in Python
  }
 ```
 3. An Array is maintained with the tokens of Clients who have **Manager** access.
-4. Manager password is `123456`
 
 ### How to Run
 1. Start server , HOST IP and PORT  will be shown in terminal  
     `python3 server.py`
 2. In another terminal start the client  
     `python3 client.py <HOST_IP> <HOST_PORT> <INSTRUCTIONS>`
+
+### Supported Instructions
+
+* `PUT <key> <value>` : To insert/update the key-value pair to database, update can be done by owner and `Manager`s
+* `GET <key>` : To read the value in database using key, `READ` access with owner and `Manager`s
+* `PROMOTE` : To promote a Client from `Guest` to `Manager`  
+  Password: **123456**
