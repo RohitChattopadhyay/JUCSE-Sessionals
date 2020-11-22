@@ -1,3 +1,6 @@
 [submodule "BCSE-IV/InternetTechnology/Assignment2"]
 	path = BCSE-IV/InternetTechnology/Assignment2
 	url = https://github.com/RohitChattopadhyay/amp-chat
+[submodule "BCSE-IV/InternetTechnology/Assignment3"]
+	path = BCSE-IV/InternetTechnology/Assignment3
+	url = https://github.com/RohitChattopadhyay/Flight-Explorer

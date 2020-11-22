@@ -2,6 +2,7 @@ import json
 import logging as log
 import os
 import socket
+import sys
 
 log.getLogger().setLevel(log.INFO)
 
@@ -13,6 +14,8 @@ class Server:
         self.password = "123456"
         self.managers = set()
         self.token_counter = 0
+        self.port = port
+
         self.socket = socket.socket()
         self.socket.bind((host, port))
         self.socket.listen(5)
@@ -43,9 +46,10 @@ class Server:
 
     def start(self):
         try:
+            db_file = f"db:{self.port}"
             try:
-                with open("db","r") as f:
-                    backup = json.load(f)                    
+                with open(db_file, "r") as f:
+                    backup = json.load(f)
                     self.in_memory_db = backup["db"]
                     self.managers = set(backup["access"])
                     del backup
@@ -58,10 +62,10 @@ class Server:
                 self.handle_connection(connection)
         except KeyboardInterrupt:
             log.warning("Stopping Server")
-            with open("db","w") as f:
+            with open(db_file, "w") as f:
                 f.write(json.dumps({
-                    "db" : self.in_memory_db,
-                    "access" : list(self.managers)
+                    "db": self.in_memory_db,
+                    "access": list(self.managers)
                 }))
             del self
 
@@ -134,7 +138,8 @@ class Server:
 
 
 def main():
-    Server().start()
+    port = int(sys.argv[1])
+    Server(port=port).start()
 
 
 if __name__ == '__main__':
