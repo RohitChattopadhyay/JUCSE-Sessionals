@@ -1,3 +1,9 @@
+[submodule "BCSE-III/compilerDesignLab/assignment1"]
+	path = BCSE-III/compilerDesignLab/assignment1
+	url = https://github.com/RohitChattopadhyay/assgn1
+[submodule "BCSE-III/compilerDesignLab/project"]
+	path = BCSE-III/compilerDesignLab/project
+	url = https://github.com/PritiSHaw/Parsing-Random-Length-Arithmetic-Expression
 [submodule "BCSE-IV/InternetTechnology/Assignment2"]
 	path = BCSE-IV/InternetTechnology/Assignment2
 	url = https://github.com/RohitChattopadhyay/amp-chat
