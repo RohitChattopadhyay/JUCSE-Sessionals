@@ -13,3 +13,6 @@
 [submodule "BCSE-IV/InternetTechnology/Assignment4"]
 	path = BCSE-IV/InternetTechnology/Assignment4
 	url = https://github.com/RohitChattopadhyay/eShop
+[submodule "BCSE-III/graphicsLab/Game"]
+	path = BCSE-III/graphicsLab/Game
+	url = https://github.com/RohitChattopadhyay/tetris-game
