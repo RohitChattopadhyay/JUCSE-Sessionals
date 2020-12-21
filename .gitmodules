@@ -16,3 +16,9 @@
 [submodule "BCSE-III/graphicsLab/Game"]
 	path = BCSE-III/graphicsLab/Game
 	url = https://github.com/RohitChattopadhyay/tetris-game
+[submodule "BCSE-III/systemsLab/textEditor"]
+	path = BCSE-III/systemsLab/textEditor
+	url = https://github.com/PritiShaw/Text-Editor
+[submodule "BCSE-III/systemsLab/8085simulator"]
+	path = BCSE-III/systemsLab/8085simulator
+	url = https://github.com/PritiShaw/8085-Simulator
