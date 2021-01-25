@@ -22,3 +22,6 @@
 [submodule "BCSE-III/systemsLab/8085simulator"]
 	path = BCSE-III/systemsLab/8085simulator
 	url = https://github.com/PritiShaw/8085-Simulator
+[submodule "BCSE-IV/InternetTechnology/Assignment5"]
+	path = BCSE-IV/InternetTechnology/Assignment5
+	url = https://github.com/RohitChattopadhyay/Spring-Store
