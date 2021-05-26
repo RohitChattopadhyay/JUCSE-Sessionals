@@ -25,3 +25,6 @@
 [submodule "BCSE-IV/InternetTechnology/Assignment5"]
 	path = BCSE-IV/InternetTechnology/Assignment5
 	url = https://github.com/RohitChattopadhyay/Spring-Store
+[submodule "BCSE-IV/VLSI"]
+	path = BCSE-IV/VLSI
+	url = https://github.com/PritiShaw/VLSI-Lab
