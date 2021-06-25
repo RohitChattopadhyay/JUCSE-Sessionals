@@ -1,27 +1,36 @@
 [submodule "BCSE-III/compilerDesignLab/project"]
 	path = BCSE-III/compilerDesignLab/project
 	url = https://github.com/PritiShaw/Parsing-Random-Length-Arithmetic-Expression
+	branch = master
 [submodule "BCSE-IV/InternetTechnology/Assignment2"]
 	path = BCSE-IV/InternetTechnology/Assignment2
 	url = https://github.com/RohitChattopadhyay/amp-chat
+	branch = main
 [submodule "BCSE-IV/InternetTechnology/Assignment3"]
 	path = BCSE-IV/InternetTechnology/Assignment3
 	url = https://github.com/RohitChattopadhyay/Flight-Explorer
+	branch = main
 [submodule "BCSE-IV/InternetTechnology/Assignment4"]
 	path = BCSE-IV/InternetTechnology/Assignment4
 	url = https://github.com/RohitChattopadhyay/eShop
+	branch = main
 [submodule "BCSE-III/graphicsLab/Game"]
 	path = BCSE-III/graphicsLab/Game
 	url = https://github.com/RohitChattopadhyay/tetris-game
+	branch = master
 [submodule "BCSE-III/systemsLab/textEditor"]
 	path = BCSE-III/systemsLab/textEditor
 	url = https://github.com/PritiShaw/Text-Editor
+	branch = master
 [submodule "BCSE-III/systemsLab/8085simulator"]
 	path = BCSE-III/systemsLab/8085simulator
 	url = https://github.com/PritiShaw/8085-Simulator
+	branch = master
 [submodule "BCSE-IV/InternetTechnology/Assignment5"]
 	path = BCSE-IV/InternetTechnology/Assignment5
 	url = https://github.com/RohitChattopadhyay/Spring-Store
+	branch = main
 [submodule "BCSE-IV/VLSI"]
 	path = BCSE-IV/VLSI
 	url = https://github.com/PritiShaw/VLSI-Lab
+	branch = main
