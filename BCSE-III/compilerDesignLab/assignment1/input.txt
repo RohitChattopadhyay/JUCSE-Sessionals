@@ -1,0 +1,6 @@
+Wikipedia is making the site more secure. You are using an old web browser that will not be able to connect to Wikipedia in the future. Please update your device or contact your IT administrator.
+We are removing support for insecure TLS protocol versions, specifically TLSv1.0 and TLSv1.1, which your browser software relies on to connect to our sites. 
+This is usually caused by outdated browsers, or older Android smartphones. Or it could be interference from corporate or personal "Web Security" software, which actually downgrades connection security.
+
+You must upgrade your web browser or otherwise fix this issue to access our sites. This message will remain until Jan 1, 2020. After that date, your browser will not be able to establish a connection to our servers.
+See also the HTTPS Browser Recommendations page for more-detailed information.
